@@ -1,0 +1,95 @@
+<div ng-controller="ConnectedWorkers" ng-init="init(clientName)">
+
+    <div class="row" ng-show="balance > 0">
+
+        <div class="col-md-12">
+            <alert type="danger">Not enough workers, spawn <b>{{balance}}</b> more.</alert>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            <button class="btn btn-primary" ng-click="refreshData()">Refresh</button>
+
+            <span>&nbsp;</span>
+
+            <label class="checkbox-inline" for="autoRefresh">
+                <input type="checkbox" ng-model="isPollingEnabled" id="autoRefresh">Auto-refresh
+            </label>
+
+        </div>
+
+    </div>
+
+    <div class="row voffset2">
+
+        <div class="col-md-12">
+
+            <table class="table table-striped table-hover table-bordered" ng-show="workers.length">
+                <thead>
+                <tr>
+                    <th class="text-center">Host</th>
+                    <th class="text-center">Port</th>
+                    <th class="text-center">PID</th>
+                    <th class="text-center">Client</th>
+                    <th class="text-center">Tags</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in workers">
+                    <td class="text-center"><b>{{item.authority.host}}</b></td>
+                    <td class="text-center"><b>{{item.authority.port}}</b></td>
+                    <td class="text-center">{{item.pid}}</td>
+                    <td ng-show="item.client">{{item.client.name}}</td>
+                    <td ng-hide="item.client"><i class="text-muted">(none)</i></td>
+                    <td ng-show="item.client">
+                        <ul class="list-inline">
+                            <li ng-repeat="tag in item.client.tags">
+                                <span class="tag">{{tag}}</span><span ng-show="!$last" class="sr-only">, </span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td ng-hide="item.client"><span class="tag-default">default</span></td>
+                    <td class="col-sm-1 text-center">
+                        <button type="button" class="btn btn-default"
+                                ng-click="onStop(item);$event.stopPropagation();">Stop
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-warning clearfix" role="alert" ng-hide="workers.length">
+                No workers have connected yet, use 'Spawn' button
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row voffset2">
+
+        <div class="col-md-6">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"
+                    ng-click="openModal()">Spawn
+            </button>
+        </div>
+
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-default" ng-click="stopAll()">Stop All</button>
+        </div>
+
+    </div>
+</div>

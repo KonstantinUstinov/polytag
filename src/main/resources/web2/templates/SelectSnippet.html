@@ -1,0 +1,56 @@
+<div ng-controller="SelectSnippet" ng-init="init(clientName)">
+
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+    <table class="table table-striped table-hover table-bordered" ng-show="snippets.length">
+        <thead>
+        <tr>
+            <th>Resource</th>
+            <th class="text-center">Version</th>
+            <th>Description</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in snippets" ng-class="lineStatus(item)" ng-click="onItemClick(item)">
+            <td><b>{{item.path}}</b></td>
+            <td class="text-center">{{item.version==0? 'trunk' : item.version}}</td>
+            <td>{{item.description}}</td>
+            <td class="text-center">{{itemStatus(item)}}</td>
+            <td class="col-sm-1 text-center">
+                <div class="btn-group" dropdown is-open="function">
+                    <button type="button" class="btn btn-default btn-block dropdown-toggle" dropdown-toggle
+                            ng-click="$event.stopPropagation();">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#" ng-click="openModal(true, item);$event.stopPropagation();">Edit</a></li>
+                        <li><a href="#" ng-click="onDelete(item);$event.stopPropagation();">Remove</a></li>
+                        <li><a href="#" ng-hide="isExportDisabled(item)" ng-click="onExport(item);$event.stopPropagation();">Promote</a></li>
+                        <li><a href="#" ng-click="onDownLoad(item);$event.stopPropagation();">Download</a></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="alert alert-warning" role="alert" ng-hide="snippets.length">
+        No resources has been created yet, use 'Create' button
+    </div>
+
+    <div class="voffset2">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal"
+                ng-click="openModal(false)">Create
+        </button>
+        <button class="btn btn-default" type="button" ng-click="addExample()" style="float: right;">
+            Add Examples
+        </button>
+        <div  style="width:5px; float: right;">
+            &nbsp;
+        </div>
+        <button type="button" class="btn btn-default" ngf-select ngf-change="upload($files)" style="float: right;">
+            Upload
+        </button>
+    </div>
+</div>

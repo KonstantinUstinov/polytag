@@ -1,0 +1,54 @@
+<div ng-controller="ExecuteRequest">
+    <div class="row">
+        <div class="col-md-2">
+            <label>Request params:</label>
+        </div>
+
+        <div class="col-md-5">
+
+            <div class="btn-group" role="group">
+                <button class="btn btn-default col-sm-offset-1" type="button" ng-click="setDefault()">Insert
+                    Default Params
+                </button>
+                <button class="btn btn-default" type="button" ng-click="encode()">URL-Encode</button>
+                <button class="btn btn-default" type="button" ng-click="decode()">URL-Decode</button>
+            </div>
+        </div>
+        <div class="col-md-3">
+
+            <label class="checkbox-inline">
+                <input type="checkbox" ng-model="isEncoded">The params are url-encoded
+            </label>
+
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary btn-block" type="button" ng-click="execute()" ng-disabled="processing">
+                Execute
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 voffset3">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="editor" ui-ace="{onLoad:aceLoaded}" ng-model="data" style="height:50px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 voffset3">
+            <label>Results:</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 voffset3">
+            <div class="editor" ui-ace="{onLoad:aceLoaded}" readonly="true" ng-model="result" id="editor"
+                 resizable on-resize="resizeEditor()" style="width:1150px;height:100px"></div>
+        </div>
+    </div>
+</div>
