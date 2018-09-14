@@ -11,19 +11,10 @@ import com.polygon.tags.routes.Service.{ErrorDetail, NewTag, UpdateTag}
 import com.polygon.tags.utils.{ConfigProvider, TagsUtils}
 import reactivemongo.bson.{BSONArray, BSONDateTime, BSONDocument, BSONObjectID, BSONString}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import akka.http.scaladsl.model.{DateTime, Uri}
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.StandardRoute
 import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
-import akka.http.scaladsl.model.StatusCodes.{
-  BadRequest,
-  Conflict,
-  Created,
-  NoContent,
-  NotFound,
-  PermanentRedirect,
-  InternalServerError,
-  OK
-}
+import akka.http.scaladsl.model.StatusCodes._
 import reactivemongo.bson
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -190,7 +181,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
   }
 
   private def generatePolytag(id: BSONObjectID): String = {
-    s"<div id=”video${id.stringify}”></div>\n<script src = ”${config.getString("polytag_url")}?p=${id.stringify}&${config.getString("DSPtemplates.GetIntent")}” \nType=”text/javascript”></script>"
+    s"""<div id="video${id.stringify}"></div>\n<script src="${config.getString("polytag_url")}?p=${id.stringify}&${config.getString("DSPtemplates.GetIntent")}" \nType="text/javascript"></script>"""
   }
 
   val futureHandler: PartialFunction[Try[Any], server.Route] = {
@@ -217,7 +208,8 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       complete(OK, "Tag created")
 
     case Success(Some(polytag: String))       =>
-      complete(OK, polytag)
+      //\\complete(HttpEntity(`application/javascript` withCharset `UTF-8`, polytag))
+      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, polytag))
 
     case Success(route: StandardRoute)        =>
       route

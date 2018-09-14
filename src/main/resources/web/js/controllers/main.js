@@ -23,5 +23,19 @@ app.controller('MainController', ['$scope',  '$modal', '$http', function($scope,
 
 }]);
 
+app.controller('YesNoModalCtrl', function($scope, $modalInstance, header, message){
+
+    $scope.modalHeader = header;
+    $scope.modalMessage = message;
+
+    $scope.ok = function(){
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function(){
+        $modalInstance.dismiss('cancel');
+    };
+});
+
 
 

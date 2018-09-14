@@ -54,6 +54,41 @@ function ListOfTags($scope, $http, $modal, configLoader){
 
     };
 
+    $scope.onDelete = function(item){
+        var modalInstance = $modal.open({
+            templateUrl: 'templates/YesNoContent.html',
+            controller: 'YesNoModalCtrl',
+            resolve: {
+                header: function(){
+                    return "Are you sure?"
+                },
+                message: function(){
+                    return "Remove the tag: " + item.name + " id: " + item.id;
+                }
+            }
+        });
+
+        modalInstance.result.then(function(){
+            var url = "https://" + window.location.host + "/api/tags/" + item.id;
+
+            $http({method: 'DELETE', withCredentials: true, url: url, data: ""}).success(function(data){
+                $scope.refreshData();
+            }).error(function(data, status){
+                console.log(err);
+            });
+        }, function(){
+            // on cancel
+        });
+    };
+
+    $scope.onItemClick = function(item){
+        $scope.$emit("upOpenResource", item)
+    };
+
+    $scope.openModal = function(isEditMode, item){
+
+    };
+
     $scope.create = function(){
 
     };
