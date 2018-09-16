@@ -101,11 +101,27 @@ function ListOfTags($scope, $http, $modal, configLoader){
         });
 
         modalInstance.result.then(function(editedItem){
-            console.log("Edit");
-            console.log(editedItem);
+            item.originalTag = editedItem.originalTag;
+            item.polyTag = editedItem.polyTag;
+            var dspArray=[];
+            dspArray.push(editedItem.DSPs);
+            item.DSPs = dspArray;
             console.log(item);
+            $scope.updateTag(item);
         }, function(){
             // on cancel
+        });
+    };
+
+    $scope.updateTag = function(item){
+        $scope.resetAlerts();
+
+        var url = $scope.conf.prefix + "/api/tags/" + item.id + "/";
+
+        $http({method: 'PUT', withCredentials: true, url: url, data: item}).success(function(data){
+            $scope.refreshData();
+        }).error(function(data, status){
+            console.log(err);
         });
     };
 
