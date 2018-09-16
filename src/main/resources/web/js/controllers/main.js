@@ -37,5 +37,18 @@ app.controller('YesNoModalCtrl', function($scope, $modalInstance, header, messag
     };
 });
 
+app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag){
+
+    $scope.editTag = editTag;
+
+    $scope.ok = function(){
+        $modalInstance.close($scope.editTag);
+    };
+
+    $scope.cancel = function(){
+        $modalInstance.dismiss('cancel');
+    };
+});
+
 
 

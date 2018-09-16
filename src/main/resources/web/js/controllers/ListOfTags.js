@@ -86,7 +86,27 @@ function ListOfTags($scope, $http, $modal, configLoader){
     };
 
     $scope.openModal = function(isEditMode, item){
+        var modalInstance = $modal.open({
+            templateUrl: 'templates/EditModalTag.html',
+            controller: 'EditModalTagCtrl',
+            resolve: {
+                editTag: function(){
+                    return {
+                        originalTag: item.originalTag,
+                        polyTag: item.polyTag,
+                        DSPs: item.DSPs[0]
+                    }
+                }
+            }
+        });
 
+        modalInstance.result.then(function(editedItem){
+            console.log("Edit");
+            console.log(editedItem);
+            console.log(item);
+        }, function(){
+            // on cancel
+        });
     };
 
     $scope.create = function(){
