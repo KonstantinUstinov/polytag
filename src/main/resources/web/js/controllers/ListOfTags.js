@@ -74,7 +74,8 @@ function ListOfTags($scope, $http, $modal, configLoader){
             $http({method: 'DELETE', withCredentials: true, url: url, data: ""}).success(function(data){
                 $scope.refreshData();
             }).error(function(data, status){
-                console.log(err);
+                console.log(data);
+                console.log(status);
             });
         }, function(){
             // on cancel
@@ -104,7 +105,9 @@ function ListOfTags($scope, $http, $modal, configLoader){
             item.originalTag = editedItem.originalTag;
             item.polyTag = editedItem.polyTag;
             var dspArray=[];
-            dspArray.push(editedItem.DSPs);
+            if (typeof editedItem.DSPs != 'undefined' && editedItem.DSPs)
+                if(editedItem.DSPs !== 'NA')
+                    dspArray.push(editedItem.DSPs);
             item.DSPs = dspArray;
             console.log(item);
             $scope.updateTag(item);
@@ -114,19 +117,60 @@ function ListOfTags($scope, $http, $modal, configLoader){
     };
 
     $scope.updateTag = function(item){
-        $scope.resetAlerts();
 
-        var url = $scope.conf.prefix + "/api/tags/" + item.id + "/";
+        var url = "https://" + window.location.host  + "/api/tags/" + item.id ;
 
-        $http({method: 'PUT', withCredentials: true, url: url, data: item}).success(function(data){
+        var update = {};
+        update.polyTag = item.polyTag;
+        update.originalTag = item.originalTag;
+        update.name = item.name;
+        update.playerIDs = item.playerIDs;
+        update.DSPs = item.DSPs;
+
+        $http({method: 'PUT', withCredentials: true, url: url, data: update, headers: {"Content-Type": "application/json;charset=UTF-8"},}).success(function(data){
             $scope.refreshData();
         }).error(function(data, status){
-            console.log(err);
+            console.log(data);
+            console.log(status);
+            console.log(url);
         });
     };
 
     $scope.create = function(){
+        var modalInstance = $modal.open({
+            templateUrl: 'templates/CreateModalTag.html',
+            controller: 'CreateModalTagCtrl',
+            resolve: {
+                createdTag: function(){
+                    return {
+                        originalTag: "",
+                        name: ""
+                    }
+                }
+            }
+        });
 
+        modalInstance.result.then(function(createItem){
+            //console.log(createItem);
+
+            var dspArray=[];
+            if (typeof createItem.dps != 'undefined' && createItem.dps)
+                dspArray.push(createItem.dps);
+            createItem.DSPs = dspArray;
+
+            console.log(createItem);
+            var url = "https://" + window.location.host  + "/api/tags/";
+            $http({method: 'POST', withCredentials: true, url: url, data: createItem, headers: {"Content-Type": "application/json;charset=UTF-8"},}).success(function(data){
+                $scope.refreshData();
+            }).error(function(data, status){
+                console.log(data);
+                console.log(status);
+                console.log(url);
+            });
+
+        }, function(){
+
+        });
     };
 
     $scope.toNowCreation = function(){

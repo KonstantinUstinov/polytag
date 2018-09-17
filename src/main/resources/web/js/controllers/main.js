@@ -50,5 +50,40 @@ app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag){
     };
 });
 
+app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag, $http){
+
+    $scope.createdTag = createdTag;
+
+    $scope.ok = function(){
+        $modalInstance.close($scope.createdTag);
+    };
+
+    $scope.generate = function(){
+
+        if (typeof $scope.createdTag.originalTag != 'undefined' && $scope.createdTag.originalTag)
+            if (typeof $scope.createdTag.name != 'undefined' && $scope.createdTag.name) {
+
+                var url = "https://" + window.location.host  + "/api/tags/generate/";
+
+                var newtag = {};
+                newtag.name = $scope.createdTag.name;
+                newtag.original = $scope.createdTag.originalTag;
+
+                $http({method: 'POST', withCredentials: true, url: url, data: newtag , headers: {"Content-Type": "application/json;charset=UTF-8"}}).success(function(data){
+                    data.dps = 'Nuviad';
+                    $scope.createdTag = data;
+                    $scope.createdTag.playId = data.playerIDs.join(", ")
+                }).error(function(data, status){
+                    console.log(data);
+                    console.log(status);
+                    console.log(url);
+                });
+            }
+    };
+
+    $scope.cancel = function(){
+        $modalInstance.dismiss('cancel');
+    };
+});
 
 
