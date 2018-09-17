@@ -1,0 +1,80 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"><span
+            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+    <h4 class="modal-title">Create Tag</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+
+        <div class="col-md-2 text-right">
+            <label>Original Tag</label>
+        </div>
+        <div class="col-md-10">
+            <textarea id="orygin" class="form-control" type='text' rows="3" ng-model="createdTag.originalTag" required></textarea>
+        </div>
+    </div>
+
+    <div class="row voffset2">
+        <div class="col-md-2 text-right">
+            <label>Name</label>
+        </div>
+        <div class="col-md-10">
+            <input id="path" class="form-control" type='text' value=""
+                   placeholder="Name"
+                   ng-model="createdTag.name" required >
+        </div>
+
+    </div>
+
+    <div class="row voffset2">
+        <div class="col-md-2 text-right">
+            <button type="button" class="btn btn-default" ng-click="generate()">Generate Tag</button>
+        </div>
+    </div>
+
+    <div class="row voffset2">
+        <div class="col-md-2 text-right">
+            <label>Poly Tag</label>
+        </div>
+        <div class="col-md-10">
+            <textarea id="poly" class="form-control" type='text' rows="3" ng-model="createdTag.polyTag" required></textarea>
+        </div>
+    </div>
+
+    <div class="row voffset2">
+        <div class="col-md-2 text-right">
+            <label>Player IDs</label>
+        </div>
+        <div class="col-md-10">
+            <input id="path" class="form-control" type='text' value=""
+                   placeholder="Player IDs"
+                   ng-model="createdTag.playId" required ng-disabled="true">
+        </div>
+    </div>
+
+    <div class="row voffset3">
+        <div class="col-md-2">
+
+            <label for="dspsid" class="control-label ">DSPs</label>
+
+            <select selectpicker class="selectpicker" data-width="150px" ng-model="createdTag.dps"  id="dspsid">
+                <option>Nuviad</option>
+                <option>Peak226</option>
+                <option>Appreciate</option>
+                <option>GetIntent</option>
+            </select>
+
+        </div>
+    </div>
+
+</div>
+
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+
+    <button type="button" class="btn btn-primary" ng-click="ok()">Save
+    </button>
+</div>

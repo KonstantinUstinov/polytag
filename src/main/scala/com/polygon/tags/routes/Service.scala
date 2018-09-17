@@ -86,9 +86,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       } ~
       (put & path(Segment).as(FindByIdRequest)) { request =>
         entity(as[UpdateTag]) { tag =>
-            onComplete(dao.findByName(tag.name).flatMap {
-              case Some(_) => Future.successful(ErrorDetail(409, "Name of tag already exists"))
-              case None =>
+            onComplete(
                 dao.update(BSONDocument("_id" -> BSONObjectID.parse(request.id).get), BSONDocument("$set" -> BSONDocument("name" -> tag.name,
                                                                                                                           "polyTag" -> tag.polyTag,
                                                                                                                           "originalTag" -> tag.originalTag,
@@ -96,7 +94,6 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
                                                                                                                           "DSPs" -> BSONArray(tag.DSPs.map(t => BSONString(t.toString))),
                                                                                                                           "modifiedDate" -> BSONDateTime(System.currentTimeMillis()))),
                   upsert = false)
-            }
           ){ result =>
             futureHandler(result)
           }
