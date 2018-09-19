@@ -78,7 +78,7 @@ class ServiceSpec
       val tag = responseAs[Tag]
       println(tag.polyTag)
       tag.playerIDs shouldBe List("1037061381")
-      tag.DSPs shouldBe List()
+      tag.DSPs shouldBe List(DSPTemplates.Nuviad)
     }
   }
 
