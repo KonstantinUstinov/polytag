@@ -144,7 +144,8 @@ function ListOfTags($scope, $http, $modal, configLoader){
                 createdTag: function(){
                     return {
                         originalTag: "",
-                        name: ""
+                        name: "",
+                        dps: "Nuviad"
                     }
                 }
             }
@@ -156,6 +157,9 @@ function ListOfTags($scope, $http, $modal, configLoader){
             var dspArray=[];
             if (typeof createItem.dps != 'undefined' && createItem.dps)
                 dspArray.push(createItem.dps);
+            else
+                dspArray.push("Nuviad");
+
             createItem.DSPs = dspArray;
 
             console.log(createItem);

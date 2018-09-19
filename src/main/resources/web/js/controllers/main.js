@@ -41,6 +41,14 @@ app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag){
 
     $scope.editTag = editTag;
 
+    $scope.dpschange = function(){
+        console.log("change");
+    };
+
+    $('dspsid').on('change', function(e){
+        console.log("change2");
+    });
+
     $scope.ok = function(){
         $modalInstance.close($scope.editTag);
     };
@@ -58,6 +66,10 @@ app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag
         $modalInstance.close($scope.createdTag);
     };
 
+    $scope.dpschange = function(){
+        $scope.generate();
+    };
+
     $scope.generate = function(){
 
         if (typeof $scope.createdTag.originalTag != 'undefined' && $scope.createdTag.originalTag)
@@ -68,10 +80,11 @@ app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag
                 var newtag = {};
                 newtag.name = $scope.createdTag.name;
                 newtag.original = $scope.createdTag.originalTag;
+                newtag.dsp = $scope.createdTag.dps;
 
                 $http({method: 'POST', withCredentials: true, url: url, data: newtag , headers: {"Content-Type": "application/json;charset=UTF-8"}}).success(function(data){
-                    data.dps = 'Nuviad';
                     $scope.createdTag = data;
+                    $scope.createdTag.dps = data.DSPs[0];
                     $scope.createdTag.playId = data.playerIDs.join(", ")
                 }).error(function(data, status){
                     console.log(data);

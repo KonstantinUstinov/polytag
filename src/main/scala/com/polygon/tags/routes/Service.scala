@@ -24,7 +24,7 @@ import scala.util.{Failure, Success, Try}
 
 object Service {
   case class ErrorDetail(code: Int, error: String, message: Option[String] = None, info: Option[String] = None)
-  case class NewTag(name: String, original: String)
+  case class NewTag(name: String, original: String, dsp: String = "Nuviad")
   case class UpdateTag(polyTag: String, originalTag: String, name: String, playerIDs: List[String], DSPs: List[DSPTemplates.DSPTemplates])
 }
 
@@ -119,7 +119,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
                 if(players.isEmpty & dsp.isEmpty)
                   complete(Conflict, ErrorDetail(409, "cannot parse players id"))
                 else
-                  complete(OK, Tag(id, generatePolytag(id), tag.original, tag.name, BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), players, List.empty))
+                  complete(OK, Tag(id, generatePolytag(id, tag.dsp), tag.original, tag.name, BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), players, List(DSPTemplates.withName(tag.dsp))))
             }){ result =>
               futureHandler(result)
             }
@@ -191,8 +191,8 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
     DateTime(date.year, date.month, date.day + 1).clicks
   }
 
-  private def generatePolytag(id: BSONObjectID): String = {
-    s"""<div id="video${id.stringify}"></div>\n<script src="${config.getString("polytag_url")}/object?p=${id.stringify}&${config.getString("DSPtemplates.GetIntent")}" \nType="text/javascript"></script>"""
+  private def generatePolytag(id: BSONObjectID, dsp: String): String = {
+    s"""<div id="video${id.stringify}"></div>\n<script src="${config.getString("polytag_url")}/object?p=${id.stringify}&${config.getString(s"DSPtemplates.$dsp")}" \nType="text/javascript"></script>"""
   }
 
   val futureHandler: PartialFunction[Try[Any], server.Route] = {

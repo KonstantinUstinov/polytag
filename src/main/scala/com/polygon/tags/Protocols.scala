@@ -62,6 +62,6 @@ trait Protocols extends DefaultJsonProtocol {
   }
 
   implicit val errorDetailFormat = jsonFormat4(ErrorDetail.apply)
-  implicit val newTag = jsonFormat2(NewTag.apply)
+  implicit val newTag = jsonFormat3(NewTag.apply)
 
 }
