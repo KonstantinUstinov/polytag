@@ -59,7 +59,7 @@
 
             <label for="dspsid" class="control-label ">DSPs</label>
 
-            <select selectpicker class="selectpicker" data-width="150px" ng-model="createdTag.dps"  id="dspsid">
+            <select selectpicker class="selectpicker" data-width="150px" ng-model="createdTag.dps"  ng-change="dpschange()"  id="dspsid">
                 <option>Nuviad</option>
                 <option>Peak226</option>
                 <option>Appreciate</option>
