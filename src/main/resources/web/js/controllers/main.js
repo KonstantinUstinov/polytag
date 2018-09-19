@@ -37,17 +37,41 @@ app.controller('YesNoModalCtrl', function($scope, $modalInstance, header, messag
     };
 });
 
-app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag){
+app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag, $http){
 
     $scope.editTag = editTag;
 
     $scope.dpschange = function(){
-        console.log("change");
-    };
+        if (typeof $scope.editTag.originalTag != 'undefined' && $scope.editTag.originalTag){
 
-    $('dspsid').on('change', function(e){
-        console.log("change2");
-    });
+            if ($scope.editTag.DSPs === 'NA')
+                return;
+
+            var url = "https://" + window.location.host  + "/api/tags/generate/";
+
+            var number = Math.random(); // 0.9394456857981651
+            number.toString(36); // '0.xtis06h6'
+            var id = number.toString(36).substr(2, 9); // 'xtis06h6'
+
+            var newtag = {};
+            newtag.name = id;
+            newtag.original = $scope.editTag.originalTag;
+            newtag.dsp = $scope.editTag.DSPs;
+
+            $http({method: 'POST', withCredentials: true, url: url, data: newtag , headers: {"Content-Type": "application/json;charset=UTF-8"}}).success(function(data){
+
+                var re = new RegExp(data.id, 'g');
+                $scope.editTag.polyTag = data.polyTag.replace(re, $scope.editTag.tagId);;
+
+            }).error(function(data, status){
+                console.log(data);
+                console.log(status);
+                console.log(url);
+            });
+
+        }
+
+    };
 
     $scope.ok = function(){
         $modalInstance.close($scope.editTag);

@@ -95,7 +95,8 @@ function ListOfTags($scope, $http, $modal, configLoader){
                     return {
                         originalTag: item.originalTag,
                         polyTag: item.polyTag,
-                        DSPs: item.DSPs[0]
+                        DSPs: item.DSPs[0],
+                        tagId: item.id
                     }
                 }
             }
