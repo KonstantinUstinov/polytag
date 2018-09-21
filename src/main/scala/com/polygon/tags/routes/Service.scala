@@ -136,8 +136,8 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
         get {
           parameters('p.as[String]).as(FindByIdRequest) { p =>
             complete {
-              HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<object type="text/html" data="${config.getString("polytag_url")}/original?p=${p.id}" width="100%" height="100%"><p>backup content</p></object>'); """)
-            }
+              HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?p=${p.id}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
+             }
           }
         }
       } ~
