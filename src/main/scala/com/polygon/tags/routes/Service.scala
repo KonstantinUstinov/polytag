@@ -1,5 +1,6 @@
 package com.polygon.tags.routes
 
+import java.net.{URLDecoder, URLEncoder}
 import akka.http.scaladsl.server.Directives._
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
@@ -18,8 +19,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.HttpCharsets._
 import reactivemongo.bson
-
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContextExecutor}
 import scala.util.{Failure, Success, Try}
 
 object Service {
@@ -36,6 +36,10 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
   implicit val logger: LoggingAdapter
 
   case class FindByIdRequest(id: String) {
+    require(BSONObjectID.parse(id).isSuccess, "the informed id is not a representation of a valid hex string")
+  }
+
+  case class FindByIdAndUrlRequest(id: String, url: String) {
     require(BSONObjectID.parse(id).isSuccess, "the informed id is not a representation of a valid hex string")
   }
 
@@ -125,7 +129,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       } ~
       pathPrefix("original") {
         get {
-          parameters('p.as[String]).as(FindByIdRequest) { p =>
+          parameters('p.as[String], 'url.as[String]).as(FindByIdAndUrlRequest) { p =>
             onComplete(dao.getPolyTag(BSONObjectID.parse(p.id).get)) { result =>
               futureHandler(result)
             }
@@ -135,9 +139,12 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       pathPrefix("object") {
         get {
           parameters('p.as[String]).as(FindByIdRequest) { p =>
-            complete {
-              HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?p=${p.id}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
-             }
+            headerValueByName("Referer") { referer =>
+              complete {
+                //logger.debug(URLDecoder.decode(h))
+                HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?p=${p.id}&url=${URLEncoder.encode(referer)}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
+              }
+            }
           }
         }
       } ~
