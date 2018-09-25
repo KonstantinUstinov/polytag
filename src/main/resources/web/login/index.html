@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <title>Citi OAuth Login</title>
+
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" type="text/css" href="../common/bootstrap/dist/css/bootstrap.min.css">
+
+    <script src="../common/browserGuard.js"></script>
+    <script src="../common/jquery/dist/jquery.min.js"></script>
+    <script src="../common/angular/angular.min.js"></script>
+    <script src="../common/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../common/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="../common/angular-cookies/angular-cookies.min.js"></script>
+    <script src="../common/angular-utf8-base64/angular-utf8-base64.min.js"></script>
+</head>
+
+<script src="auth.js"></script>
+
+<script>
+    var app = angular.module('login_app', [
+        'ab-base64',
+        'ngCookies',
+        'ui.bootstrap'
+    ], function($locationProvider){
+        $locationProvider.html5Mode(true);
+    });
+
+    app.service('auth', ['base64', '$http', auth]);
+
+    app.controller('MainController', ['$scope', '$location', 'auth', function($scope, $location, auth){
+
+        $scope.accessToken = undefined;
+        $scope.password = "";
+        $scope.userName = "";
+
+        $scope.redirectUri = "../index.html";
+        $scope.state = $location.search().state || "";
+        $scope.client_secret = $location.search().client_secret || "";
+        $scope.client_id = "Polytag List";
+        $scope.responseType = "responseType";
+
+        $scope.loginAlerts = [];
+
+        $scope.isInvalidRequest = function(){
+            return !$scope.client_id || !$scope.responseType ||  !$scope.redirectUri;
+        };
+
+        if ($scope.isInvalidRequest()) {
+            $scope.loginAlerts.push({
+                type: "danger",
+                msg: "Request Error: client_id, redirect_uri and response_type=code must be specified"
+            });
+        }
+
+        $scope.login = function(){
+            $scope.loginAlerts = [];
+            $scope.dataLoading = true;
+            auth.Login($scope.userName, $scope.password, $scope.state, $scope.redirectUri, $scope.client_id, $scope.client_secret, function(response){
+                $scope.dataLoading = false;
+                window.location = $scope.redirectUri +
+                "/" + $scope.userName +
+                "?code=" + encodeURIComponent(response.code) +
+                "&state=" + (response.state || "")
+            }, function(response){
+                $scope.loginAlerts.push({type: "danger", msg: "Error: " + response.error});
+                $scope.dataLoading = false;
+            });
+        };
+
+        $scope.closeLoginAlert = function(index){
+            $scope.loginAlerts.splice(index, 1);
+        };
+
+    }]);
+
+</script>
+
+<body ng-app="login_app" ng-controller="MainController">
+<div class="container">
+    <div class="row voffset2 page-header">
+        <div class="col-md-10">
+            <h3>
+                <img src="../images/image001.png"> &nbsp;&nbsp;<span style="vertical-align: sub">Polytags Login</span>
+            </h3>
+        </div>
+    </div>
+
+    <!--login -->
+
+    <div class="row">
+        <div class="col-md-12 voffset2">
+
+            <alert ng-repeat="alert in loginAlerts" type="{{alert.type}}" close="closeLoginAlert($index)">
+                {{alert.msg}}
+            </alert>
+
+            <div ng-hide="isInvalidRequest()">
+
+                <h3>Please login to access '{{client_id}}'</h3> <br>
+
+                <form name="form" ng-submit="login()" role="form" method="post">
+
+                    <div class="form-group col-md-6">
+                        <label for="userName">Username</label>
+                        <i class="fa fa-key"></i>
+                        <input type="text" name="userName" id="userName" class="form-control"
+                               ng-model="userName"
+                               maxlength="256"
+                               required/>
+                            <span ng-show="form.userName.$dirty && form.userName.$error.required"
+                                  class="help-block">Username is required</span>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="password">Password</label>
+                        <i class="fa fa-lock"></i>
+                        <input type="password" name="password" id="password" class="form-control"
+                               ng-model="password"
+                               maxlength="256"
+                               required/>
+                        <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+                    </div>
+
+                    <div class="form-actions col-md-11">
+                        <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-info" ng-s>
+                            Login
+                        </button>
+                        <img ng-if="dataLoading"
+                             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
