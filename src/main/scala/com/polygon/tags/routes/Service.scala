@@ -1,6 +1,7 @@
 package com.polygon.tags.routes
 
 import java.net.{URLDecoder, URLEncoder}
+
 import akka.http.scaladsl.server.Directives._
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
@@ -19,7 +20,9 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.HttpCharsets._
 import reactivemongo.bson
-import scala.concurrent.{ExecutionContextExecutor}
+
+import scala.concurrent.ExecutionContextExecutor
+import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 object Service {
@@ -139,12 +142,13 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       pathPrefix("object") {
         get {
           parameters('p.as[String]).as(FindByIdRequest) { p =>
-            headerValueByName("Referer") { referer =>
               complete {
                 //logger.debug(URLDecoder.decode(h))
-                HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?p=${p.id}&url=${URLEncoder.encode(referer)}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
+                //HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?p=${p.id}&url=${URLEncoder.encode(referer)}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
+                //HttpEntity(ContentTypes., readmeText)
+                HttpEntity(`application/javascript` withCharset `UTF-8`, readmeText)
               }
-            }
+
           }
         }
       } ~
@@ -170,6 +174,9 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
               |"timeOut": "30m" }""".stripMargin
         }
     }
+
+  val readmeText  = Source.fromResource("t.txt").getLines.mkString("\r\n")
+
 
   private def generateSearchJson(search: SearchRequest) : BSONDocument =  {
     val _id = search._id.map(id => BSONDocument(BSONDocument("_id" -> BSONObjectID.parse(id).get)))

@@ -82,18 +82,18 @@ class ServiceSpec
     }
   }
 
-   "Service" should "return polytag" in {
+   /*"Service" should "return polytag" in {
     Get(s"/api/tags/original?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
       status shouldBe OK
       responseAs[String] shouldBe "original"
     }
-  }
+  }*/
 
-  "Service" should "return not found polytag" in {
+  /*"Service" should "return not found polytag" in {
     Get(s"/api/tags/original?p=" + BSONObjectID.generate().stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
       status shouldBe NotFound
     }
-  }
+  }*/
 
   "Service" should "search by tag id" in {
     Get(s"/api/tags/search?polytagid=" + id.stringify) ~> routes ~> check {
@@ -120,7 +120,7 @@ class ServiceSpec
     }
   }
 
-  "Service" should "delete  tag" in {
+  /*"Service" should "delete  tag" in {
     Delete(s"/api/tags/" + id.stringify ) ~> routes ~> check {
       status shouldBe OK
     }
@@ -128,5 +128,5 @@ class ServiceSpec
     Get(s"/api/tags/original?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
       status shouldBe NotFound
     }
-  }
+  }*/
 }
