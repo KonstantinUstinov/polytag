@@ -129,4 +129,11 @@ class ServiceSpec
       status shouldBe NotFound
     }
   }
+
+  "Service" should "return  object js" in {
+    Get(s"/api/tags/object?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
+      status shouldBe OK
+      responseAs[String] shouldBe s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="https://localhost:8585/api/tags/original?p=${id.stringify}&sid=%5B%5BBUNDLE_ID_ENCODED%5D%5D&d=%5B%5BBUNDLE_ID_ENCODED%5D%5D&appn=%5B%5BAPP_NAME_ENCODED%5D" width="100%" height="100%"><p>backup content</p></object> </body>'); """
+    }
+  }
 }

@@ -36,5 +36,11 @@ class TagsUtilsSpec extends FlatSpec with Matchers {
 
   }
 
+  "TagsUtil" should "replaceQueryInTag" in {
+
+    val s = "<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXXXXXXX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>"
+    TagsUtils.replaceQueryInTag(s, Uri("http://f.com?p=i&a=6").query()) shouldBe "<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXXXXXXX&a=6\"\n\ntype=\"text/javascript\"></script>"
+
+  }
 
 }

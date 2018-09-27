@@ -1,10 +1,13 @@
 package com.polygon.tags.utils
 
 import java.io.StringReader
+import java.util.regex.{Matcher, Pattern}
+
 import akka.http.scaladsl.model.Uri
 import nu.validator.htmlparser.common.XmlViolationPolicy
 import nu.validator.htmlparser.sax.HtmlParser
 import org.xml.sax.InputSource
+
 import scala.xml.Node
 import scala.xml.parsing.NoBindingFactoryAdapter
 
@@ -23,6 +26,14 @@ object TagsUtils {
       flatten.map(
         url => Uri(url.text).query().filterNot { case (k, _) => k == "p" }
       )
+  }
+
+  def replaceQueryInTag(tag: String, query: Uri.Query) : String = {
+    val q = query.filterNot { case (k, _) => k == "p" }
+    getDSPTemplates(tag).foldLeft(tag)(
+      (tag, uriQuery) =>
+        tag.replaceAll(Pattern.quote(uriQuery.foldLeft("")((url, p) => url + "&" + p._1 + "=" + p._2)), "&" + q.toString())
+    )
   }
 
   private def getRootNode(tag: String): List[Node] = {

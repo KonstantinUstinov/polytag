@@ -125,19 +125,24 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       } ~
       pathPrefix("original") {
         get {
-          parameters('p.as[String]).as(FindByIdRequest) { p =>
-            onComplete(dao.getPolyTag(BSONObjectID.parse(p.id).get)) { result =>
-              futureHandler(result)
+          extractUri { uri =>
+            parameters('p.as[String]).as(FindByIdRequest) { p =>
+              onComplete(dao.getPolyTag(BSONObjectID.parse(p.id).get)) { result =>
+                //val query = uri.query().filter(_._1 != "p")
+                futureHandler(result.map(_.map(TagsUtils.replaceQueryInTag(_, uri.query()))))
+              }
             }
           }
         }
       } ~
       pathPrefix("object") {
         get {
-          parameters('p.as[String]).as(FindByIdRequest) { p =>
-            complete {
-              HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?p=${p.id}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
-             }
+          extractUri { uri =>
+            parameters('p.as[String]).as(FindByIdRequest) { p =>
+              complete {
+                HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?${uri.query()}" width="100%" height="100%"><p>backup content</p></object> </body>'); """)
+              }
+            }
           }
         }
       } ~
