@@ -32,7 +32,7 @@ object TagsUtils {
     val q = query.filterNot { case (k, _) => k == "p" }
     getDSPTemplates(tag).foldLeft(tag)(
       (tag, uriQuery) =>
-        tag.replaceAll(Pattern.quote(uriQuery.foldLeft("")((url, p) => url + "&" + p._1 + "=" + p._2)), "&" + q.toString())
+        tag.replaceAll(Pattern.quote(uriQuery.foldLeft("")((url, p) => url + "&" + p._1 + "=" + p._2)), Matcher.quoteReplacement("&" + q.toString()))
     )
   }
 

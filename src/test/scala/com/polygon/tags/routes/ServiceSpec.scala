@@ -120,6 +120,12 @@ class ServiceSpec
     }
   }
 
+  "Service" should "not return error" in {
+    Get("/api/tags/original?p=" + id.stringify + "&sid=$%7BAPP_BUNDLE_ID%7D&cb=$%7BCACHE_BUSTER%7D&appn=$%7BAPP_NAME%7D&appb=$%7BAPP_BUNDLE_ID%7D&appsu=$%7BAPP_STORE_URL%7D&appidfa=$%7BIOS_IFA%7D&appaid=$%7BGOOGLE_AID%7D&appsi=$%7BAPP_BUNDLE_ID%7D&loclong=$%7BLONGITUDE%7D&loclat=$%7BLATITUDE%7D&w=480&h=320&ho=1&d=$%7BAPP_BUNDLE_ID%7D&c4=$%7BIMPRESSION_CONTEXT%7D&c5=$%7BIMPRESSION_CONTEXT%7D") ~> routes ~> check {
+      status shouldBe OK
+    }
+  }
+
   "Service" should "delete  tag" in {
     Delete(s"/api/tags/" + id.stringify ) ~> routes ~> check {
       status shouldBe OK
@@ -136,4 +142,5 @@ class ServiceSpec
       responseAs[String] shouldBe s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="https://localhost:8585/api/tags/original?p=${id.stringify}&sid=%5B%5BBUNDLE_ID_ENCODED%5D%5D&d=%5B%5BBUNDLE_ID_ENCODED%5D%5D&appn=%5B%5BAPP_NAME_ENCODED%5D" width="100%" height="100%"><p>backup content</p></object> </body>'); """
     }
   }
+
 }
