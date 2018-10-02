@@ -24,6 +24,7 @@ libraryDependencies ++= {
     "org.reactivemongo" %% "reactivemongo" % reactiveV,
     "nu.validator.htmlparser" % "htmlparser" % "1.4",
     "org.scala-lang.modules" %% "scala-xml" % "1.1.0",
+    "com.nulab-inc" %% "scala-oauth2-core" % "1.3.0",
     "org.scalatest"     %% "scalatest" % scalaTestV % "test"
   )
 }

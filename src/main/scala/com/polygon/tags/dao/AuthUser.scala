@@ -1,3 +1,5 @@
 package com.polygon.tags.dao
 
-case class AuthUser(name: String, pass: String, ssoToken: Option[String] = None)
+import reactivemongo.bson.BSONObjectID
+
+case class AuthUser(id: BSONObjectID, name: String, pass: String)
