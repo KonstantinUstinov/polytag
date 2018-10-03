@@ -74,7 +74,7 @@ class ServiceSearchSpec   extends FlatSpec
   }
 
   "Search" should "be path by DSP" in {
-    Get(s"/api/tags/search?dsp=Peak226") ~> routes ~> check {
+    Get(s"/api/tags/search?dsp=Peak226&name=name2") ~> routes ~> check {
       status shouldBe OK
       contentType shouldBe `application/json`
       responseAs[List[Tag]].count(_ => true) shouldBe 1

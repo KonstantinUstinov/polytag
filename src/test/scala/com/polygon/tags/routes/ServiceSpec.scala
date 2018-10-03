@@ -126,6 +126,13 @@ class ServiceSpec
     }
   }
 
+  "Service" should "return  object js" in {
+    Get(s"/api/tags/object?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
+      status shouldBe OK
+      responseAs[String] shouldBe s""" document.write('<object id="object" type="text/html"  data="https://localhost:8585/api/tags/original?p=${id.stringify}&sid=%5B%5BBUNDLE_ID_ENCODED%5D%5D&d=%5B%5BBUNDLE_ID_ENCODED%5D%5D&appn=%5B%5BAPP_NAME_ENCODED%5D" style="width: 320px; height: 270px;"><p>backup content</p></object>'); """
+    }
+  }
+
   "Service" should "delete  tag" in {
     Delete(s"/api/tags/" + id.stringify ) ~> routes ~> check {
       status shouldBe OK
@@ -133,13 +140,6 @@ class ServiceSpec
 
     Get(s"/api/tags/original?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
       status shouldBe NotFound
-    }
-  }
-
-  "Service" should "return  object js" in {
-    Get(s"/api/tags/object?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
-      status shouldBe OK
-      responseAs[String] shouldBe s""" document.write('<body style="overflow:hidden;"> <object id="object" type="text/html"  data="https://localhost:8585/api/tags/original?p=${id.stringify}&sid=%5B%5BBUNDLE_ID_ENCODED%5D%5D&d=%5B%5BBUNDLE_ID_ENCODED%5D%5D&appn=%5B%5BAPP_NAME_ENCODED%5D" width="100%" height="100%"><p>backup content</p></object> </body>'); """
     }
   }
 
