@@ -9,35 +9,29 @@ class AuthUserDAOSpec extends AsyncFlatSpec with ConfigProvider with AuthUserDAO
   val id = BSONObjectID.generate()
 
   "AuthUserDAO" should "save user" in {
-    val result = dao.save(AuthUser(id, "poly", "original"))
+    val result = user_dao.save(AuthUser(id, "poly", "original"))
     result.map{wr =>
       assert(wr.ok)
     }
-
   }
 
   "AuthUserDAO" should "read user" in {
-
-    dao.getUserByName("poly", "original").map {user =>
+    user_dao.getUserByName("poly", "original").map {user =>
       assert(user.get.name == "poly")
       assert(user.get.pass == "original")
     }
-
   }
 
   "AuthUserDAO" should "read  Empty user" in {
-
-    dao.getUserByName("poly", "original2").map {user =>
+    user_dao.getUserByName("poly", "original2").map {user =>
       assert(user.isEmpty)
     }
-
   }
 
 
   "AuthUserDAO" should "remove user" in {
-    dao.remove(id).map{wr =>
+    user_dao.remove(id).map{wr =>
       assert(wr.ok)
     }
   }
-
 }

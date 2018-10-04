@@ -44,5 +44,5 @@ object AuthUserDAO extends ConfigProvider {
 }
 
 trait AuthUserDAO {
-  def dao = AuthUserDAO.userDao
+  def user_dao = AuthUserDAO.userDao
 }
