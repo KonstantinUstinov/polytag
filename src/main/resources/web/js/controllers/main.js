@@ -10,6 +10,7 @@ var app = angular.module('polytags', [
 
 app.service("configLoader", ["$http", "$location", ConfigLoader]);
 app.service("utils", CommonUtilites);
+app.service('authCook', ['$cookies', authCook]);
 
 app.directive("selectpicker", SelectPickerDirective);
 app.directive('resizable', ResizableDirective);
@@ -17,9 +18,18 @@ app.directive('resizable', ResizableDirective);
 app.controller('ListOfTags', ['$scope', '$http', '$modal', 'configLoader', ListOfTags]);
 
 
-app.controller('MainController', ['$scope',  '$modal', '$http', function($scope,  $modal, $http){
+app.controller('MainController', ['$scope', '$cookies', 'authCook', '$modal', '$http', function($scope, $cookies, authCook, $modal, $http){
 
+    $scope.clientName = $cookies.user || "";
 
+    if ($scope.clientName == "") {
+        authCook.clearAuthorizationToken();
+        window.location.href = window.location.origin + '/login/index.html';
+    }
+
+    $scope.logout = function(){
+        window.location = "/logout"
+    };
 
 }]);
 

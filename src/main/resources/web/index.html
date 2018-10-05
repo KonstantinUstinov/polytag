@@ -46,7 +46,7 @@
     <script src="js/directives/ResizableDirective.js"></script>
 
     <script src="js/controllers/ListOfTags.js"></script>
-
+    <script src="js/controllers/authCook.js"></script>
     <script src="js/controllers/main.js"></script>
 </head>
 
@@ -62,7 +62,7 @@
 
         <div class="col-md-2 text-right" ng-show=true style="vertical-align:middle;height: 60px">
             <br/>
-            <b>UserName &nbsp;&nbsp;</b>
+            <b>{{clientName}} &nbsp;&nbsp;</b>
             <button class="btn btn-default btn-sm" ng-click="logout()">Logout</button>
         </div>
     </div>

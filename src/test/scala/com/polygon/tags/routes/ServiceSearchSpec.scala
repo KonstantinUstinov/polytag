@@ -14,7 +14,7 @@ import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.DateTime
 
-class ServiceSearchSpec   extends FlatSpec
+class ServiceSearchSpec extends FlatSpec
   with Matchers
   with ScalatestRouteTest
   with Service

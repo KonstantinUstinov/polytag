@@ -1,6 +1,7 @@
 package com.polygon.tags
 
 import java.security.{KeyStore, SecureRandom}
+
 import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
 import akka.event.Logging.LogLevel
@@ -10,18 +11,17 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.RouteResult.Complete
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.http.scaladsl.server.directives.{DebuggingDirectives, LogEntry, LoggingMagnet}
-import com.polygon.tags.routes.Service
+import com.polygon.tags.routes.{LoginService, Service}
 import javax.net.ssl.{KeyManagerFactory, SSLContext}
-
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
-
+import akka.http.scaladsl.server.Directives._
 
 class RoutingServer(implicit val system: ActorSystem,
                     implicit val materializer: ActorMaterializer,
                     implicit val executor: ExecutionContextExecutor,
-                    implicit val logger: LoggingAdapter) extends Service {
+                    implicit val logger: LoggingAdapter) extends Service with LoginService {
   def startServer(address: String, port: Int) = {
-    val loggedRoute = requestMethodAndResponseStatusAsInfo(Logging.InfoLevel, routes)
+    val loggedRoute = requestMethodAndResponseStatusAsInfo(Logging.InfoLevel, routes ~ loginServiceRoute)
 
     val https: ConnectionContext = {
       val password = "hof".toCharArray
