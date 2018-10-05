@@ -35,6 +35,8 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
   implicit val executor: ExecutionContextExecutor
   implicit val logger: LoggingAdapter
 
+  private val styleByDef = "width: 320px; height: 270px;"
+
   case class FindByIdRequest(id: String) {
     require(BSONObjectID.parse(id).isSuccess, "the informed id is not a representation of a valid hex string")
   }
@@ -125,18 +127,37 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       } ~
       pathPrefix("original") {
         get {
-          parameters('p.as[String]).as(FindByIdRequest) { p =>
-            onComplete(dao.getPolyTag(BSONObjectID.parse(p.id).get)) { result =>
-              futureHandler(result)
+          extractUri { uri =>
+            parameters('p.as[String]).as(FindByIdRequest) { p =>
+              onComplete(dao.getPolyTag(BSONObjectID.parse(p.id).get)) { result =>
+                futureHandler(result.map(_.map(TagsUtils.replaceQueryInTag(_, uri.query()))))
+              }
             }
           }
         }
       } ~
       pathPrefix("object") {
         get {
-          parameters('p.as[String]).as(FindByIdRequest) { p =>
-            complete {
-              HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<object type="text/html" data="${config.getString("polytag_url")}/original?p=${p.id}" width="100%" height="100%"><p>backup content</p></object>'); """)
+          extractUri { uri =>
+            parameters('p.as[String]).as(FindByIdRequest) { p =>
+              onComplete(dao.getPolyTag(BSONObjectID.parse(p.id).get).map {
+                case None =>
+                  complete(NotFound, ErrorDetail(404, "Not Found"))
+                case Some(tag) =>
+                  complete {
+                    val size = TagsUtils.getSizeOfAd(tag) match {
+                      case Nil => List((0, 0))
+                      case other => other
+                    }
+                    val list = List(size.map(_._1).max, size.map(_._2).sum)
+                    val style = if(list.sum >= 1) s"width: ${list.head + 20}px; height: ${list.tail.head + 20}px;" else styleByDef
+
+                    HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?${uri.query()}" style="$style"><p>backup content</p></object>'); """)
+                  }
+
+              }){ result =>
+                futureHandler(result)
+              }
             }
           }
         }
