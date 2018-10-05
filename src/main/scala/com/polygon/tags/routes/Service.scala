@@ -89,10 +89,11 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       (put & path(Segment).as(FindByIdRequest)) { request =>
         entity(as[UpdateTag]) { tag =>
             onComplete(
+
                 dao.update(BSONDocument("_id" -> BSONObjectID.parse(request.id).get), BSONDocument("$set" -> BSONDocument("name" -> tag.name,
                                                                                                                           "polyTag" -> tag.polyTag,
                                                                                                                           "originalTag" -> tag.originalTag,
-                                                                                                                          "playerIDs" -> BSONArray(tag.playerIDs.map(BSONString(_))),
+                                                                                                                          "playerIDs" -> BSONArray(TagsUtils.getPlayerIDs(tag.originalTag).map(BSONString(_))),
                                                                                                                           "DSPs" -> BSONArray(tag.DSPs.map(t => BSONString(t.toString))),
                                                                                                                           "modifiedDate" -> BSONDateTime(System.currentTimeMillis()))),
                   upsert = false)

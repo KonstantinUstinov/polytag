@@ -104,7 +104,7 @@ class ServiceSpec
   }
 
   "Service" should "update  tag" in {
-    Put(s"/api/tags/" + id.stringify, UpdateTag("polygon", "origale", "Name2", List("id-1", "id-2", "id-3"), List(DSPTemplates.GetIntent))) ~> routes ~> check {
+    Put(s"/api/tags/" + id.stringify, UpdateTag("polygon", "origale", "Name2", List(), List(DSPTemplates.GetIntent))) ~> routes ~> check {
       status shouldBe OK
     }
 
@@ -116,7 +116,7 @@ class ServiceSpec
       responseAs[Tag].originalTag shouldBe "origale"
       responseAs[Tag].polyTag shouldBe "polygon"
       responseAs[Tag].DSPs shouldBe List(DSPTemplates.GetIntent)
-      responseAs[Tag].playerIDs shouldBe List("id-1", "id-2", "id-3")
+      responseAs[Tag].playerIDs shouldBe List()
     }
   }
 
