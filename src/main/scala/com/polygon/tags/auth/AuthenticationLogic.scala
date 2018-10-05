@@ -11,6 +11,7 @@ import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 import scalaoauth2.provider._
 
@@ -108,6 +109,12 @@ trait AuthenticationLogic extends AuthUserDAO with UserTokenDAO with ConfigProvi
       throw new InvalidRequest("Authorization header is invalid")
     }
     matcher.group(2)
+  }
+
+  def logoutUser(token : String) : Future[Boolean] = {
+    tokenDao.removeByToken(token).map(_.ok).recover {
+      case NonFatal(e) => false
+    }
   }
 
 }

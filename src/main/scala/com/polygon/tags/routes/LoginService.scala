@@ -66,6 +66,12 @@ trait LoginService extends ConfigProvider with SprayJsonSupport with Authenticat
   def authLogoutRoute =
     extract(_.request) { req =>
       val token = extractAuthToken(req).getOrElse("")
+      onSuccess(logoutUser(token)) { result =>
+        logger.debug(s"Delete cooks (token) - $result")
+        deleteCookie(authCookie(""), userCookie("")) {
+          redirect(Uri("/login/index.html"), StatusCodes.Found)
+        }
+      }
     }
 
   def authCookie(token: String) = HttpCookie(Authorization, s"Bearer%20$token", httpOnly = false, secure = true, path = Some("/"), expires = None)
