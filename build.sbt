@@ -29,4 +29,6 @@ libraryDependencies ++= {
   )
 }
 
+parallelExecution in Test := false
+
 Revolver.settings
