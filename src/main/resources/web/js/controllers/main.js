@@ -104,6 +104,11 @@ app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag
         $scope.generate();
     };
 
+
+    $scope.domainChanged = function(){
+        $scope.generate();
+    };
+
     $scope.generate = function(){
 
         if (typeof $scope.createdTag.originalTag != 'undefined' && $scope.createdTag.originalTag)

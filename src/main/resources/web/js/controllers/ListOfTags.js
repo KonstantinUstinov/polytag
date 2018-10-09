@@ -2,6 +2,10 @@ function ListOfTags($scope, $http, $modal, configLoader){
 
     $scope.tags = [];
 
+    configLoader().then(function(cfg) {
+        $scope.config = cfg;
+    });
+
     $scope.init = function(){
         var date = new Date();
         date.setFullYear( date.getFullYear() - 3 );
@@ -146,7 +150,9 @@ function ListOfTags($scope, $http, $modal, configLoader){
                     return {
                         originalTag: "",
                         name: "",
-                        dps: "Nuviad"
+                        dps: "Nuviad",
+                        domains: $scope.config.domains,
+                        domain: "https://s.cubiqads.com/api/tags"
                     }
                 }
             }

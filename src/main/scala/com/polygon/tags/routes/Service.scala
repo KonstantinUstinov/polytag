@@ -18,7 +18,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.HttpCharsets._
 import reactivemongo.bson
-
+import scala.collection.JavaConversions._
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
 
@@ -182,6 +182,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
               |"editor-max-length": "65535",
               |"snippetDescMaxLength": "256",
               |"snippetPathMaxLength": "1024",
+              |"domains" : ["${config.getStringList("Domains").toList.mkString("\",\"")}"],
               |"timeOut": "30m" }""".stripMargin
         }
     }
