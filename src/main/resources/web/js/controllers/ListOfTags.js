@@ -90,6 +90,21 @@ function ListOfTags($scope, $http, $modal, configLoader){
         $scope.$emit("upOpenResource", item)
     };
 
+    $scope.findDomain = function(polyTag, domains){
+
+        //domains.forEach(function(a){if (polyTag.indexOf(a)>-1) return a;});
+        var matches = domains.filter(function(domain){
+            if(domain) {
+                return polyTag.indexOf(domain) >= 0;
+            }
+        });
+
+        if (matches.length > 0)
+            return matches[0];
+        else
+            return "https://s.cubiqads.com/api/tags";
+    };
+
     $scope.openModal = function(isEditMode, item){
         var modalInstance = $modal.open({
             templateUrl: 'templates/EditModalTag.html',
@@ -100,7 +115,9 @@ function ListOfTags($scope, $http, $modal, configLoader){
                         originalTag: item.originalTag,
                         polyTag: item.polyTag,
                         DSPs: item.DSPs[0],
-                        tagId: item.id
+                        tagId: item.id,
+                        domains: $scope.config.domains,
+                        domain: $scope.findDomain(item.polyTag, $scope.config.domains)
                     }
                 }
             }
