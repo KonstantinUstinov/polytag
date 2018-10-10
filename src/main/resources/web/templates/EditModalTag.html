@@ -17,23 +17,38 @@
     </div>
 
     <div class="row voffset2">
-        <div class="col-md-12">
+        <div class="col-md-2 text-right">
             <label for="descr">PolyTag:</label>
+        </div>
+        <div class="col-md-10">
             <textarea id="descr" class="form-control" type='text' rows="3" ng-model="editTag.polyTag" ></textarea>
         </div>
     </div>
 
     <div class="row voffset3">
-        <div class="col-md-2">
-
+        <div class="col-md-2 text-right">
             <label for="dspsid" class="control-label ">DSPs</label>
-
+        </div>
+        <div class="col-md-10">
             <select selectpicker class="selectpicker" data-width="150px" ng-model="editTag.DSPs" ng-change="dpschange()"  id="dspsid">
                 <option>NA</option>
                 <option>Nuviad</option>
                 <option>Peak226</option>
                 <option>Appreciate</option>
                 <option>GetIntent</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="row voffset4">
+        <div class="col-md-2 text-right">
+            <label class="control-label ">Domain</label>
+        </div>
+        <div class="col-md-10">
+
+            <select class="form-control"  data-width="300px"  ng-change="domainChanged()" ng-model="editTag.domain">
+                <option ng-selected="editTag.domain == item" ng-repeat="item in editTag.domains" ng-value="item">{{item}}</option>
             </select>
 
         </div>

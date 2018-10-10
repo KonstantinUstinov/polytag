@@ -47,9 +47,17 @@ app.controller('YesNoModalCtrl', function($scope, $modalInstance, header, messag
     };
 });
 
-app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag, $http){
+app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag, $http, configLoader){
 
     $scope.editTag = editTag;
+
+    configLoader().then(function(cfg) {
+        $scope.config = cfg;
+    });
+
+    $scope.domainChanged = function(){
+        $scope.dpschange();
+    };
 
     $scope.dpschange = function(){
         if (typeof $scope.editTag.originalTag != 'undefined' && $scope.editTag.originalTag){
@@ -67,11 +75,14 @@ app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag, $ht
             newtag.name = id;
             newtag.original = $scope.editTag.originalTag;
             newtag.dsp = $scope.editTag.DSPs;
+            newtag.domain = $scope.editTag.domain;
 
             $http({method: 'POST', withCredentials: true, url: url, data: newtag , headers: {"Content-Type": "application/json;charset=UTF-8"}}).success(function(data){
 
                 var re = new RegExp(data.id, 'g');
-                $scope.editTag.polyTag = data.polyTag.replace(re, $scope.editTag.tagId);;
+                $scope.editTag.polyTag = data.polyTag.replace(re, $scope.editTag.tagId);
+                $scope.editTag.domains = $scope.config.domains;
+                $scope.editTag.domain = newtag.domain;
 
             }).error(function(data, status){
                 console.log(data);
@@ -92,15 +103,24 @@ app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag, $ht
     };
 });
 
-app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag, $http){
+app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag, $http, configLoader){
 
     $scope.createdTag = createdTag;
+
+    configLoader().then(function(cfg) {
+        $scope.config = cfg;
+    });
 
     $scope.ok = function(){
         $modalInstance.close($scope.createdTag);
     };
 
     $scope.dpschange = function(){
+        $scope.generate();
+    };
+
+
+    $scope.domainChanged = function(){
         $scope.generate();
     };
 
@@ -115,11 +135,14 @@ app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag
                 newtag.name = $scope.createdTag.name;
                 newtag.original = $scope.createdTag.originalTag;
                 newtag.dsp = $scope.createdTag.dps;
+                newtag.domain = $scope.createdTag.domain;
 
                 $http({method: 'POST', withCredentials: true, url: url, data: newtag , headers: {"Content-Type": "application/json;charset=UTF-8"}}).success(function(data){
                     $scope.createdTag = data;
                     $scope.createdTag.dps = data.DSPs[0];
-                    $scope.createdTag.playId = data.playerIDs.join(", ")
+                    $scope.createdTag.playId = data.playerIDs.join(", ");
+                    $scope.createdTag.domains =  $scope.config.domains;
+                    $scope.createdTag.domain = newtag.domain
                 }).error(function(data, status){
                     console.log(data);
                     console.log(status);

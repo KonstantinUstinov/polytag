@@ -18,13 +18,13 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.HttpCharsets._
 import reactivemongo.bson
-
+import scala.collection.JavaConversions._
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
 
 object Service {
   case class ErrorDetail(code: Int, error: String, message: Option[String] = None, info: Option[String] = None)
-  case class NewTag(name: String, original: String, dsp: String = "Nuviad")
+  case class NewTag(name: String, original: String, dsp: String = "Nuviad", domain: String = "https://s.cubiqads.com/api/tags")
   case class UpdateTag(polyTag: String, originalTag: String, name: String, playerIDs: List[String], DSPs: List[DSPTemplates.DSPTemplates])
 }
 
@@ -119,7 +119,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
                 if(players.isEmpty & dsp.isEmpty)
                   complete(Conflict, ErrorDetail(409, "cannot parse players id"))
                 else
-                  complete(OK, Tag(id, generatePolytag(id, tag.dsp), tag.original, tag.name, BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), players, List(DSPTemplates.withName(tag.dsp))))
+                  complete(OK, Tag(id, generatePolytag(id, tag.dsp, tag.domain), tag.original, tag.name, BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), players, List(DSPTemplates.withName(tag.dsp))))
             }){ result =>
               futureHandler(result)
             }
@@ -153,7 +153,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
                     val list = List(size.map(_._1).max, size.map(_._2).sum)
                     val style = if(list.sum >= 1) s"width: ${list.head + 20}px; height: ${list.tail.head + 20}px;" else styleByDef
 
-                    HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<object id="object" type="text/html"  data="${config.getString("polytag_url")}/original?${uri.query()}" style="$style"><p>backup content</p></object>'); """)
+                    HttpEntity(`application/javascript` withCharset `UTF-8`,s""" document.write('<object id="object" type="text/html"  data="${uri.withPath(Uri.Path("/api/tags/original"))}" style="$style"><p>backup content</p></object>'); """)
                   }
 
               }){ result =>
@@ -182,6 +182,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
               |"editor-max-length": "65535",
               |"snippetDescMaxLength": "256",
               |"snippetPathMaxLength": "1024",
+              |"domains" : ["${config.getStringList("Domains").mkString("\",\"")}"],
               |"timeOut": "30m" }""".stripMargin
         }
     }
@@ -210,8 +211,8 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
     DateTime(date.year, date.month, date.day + 1).clicks
   }
 
-  private def generatePolytag(id: BSONObjectID, dsp: String): String = {
-    s"""<div id="video${id.stringify}"></div>\n<script src="${config.getString("polytag_url")}/object?p=${id.stringify}&${config.getString(s"DSPtemplates.$dsp")}" \nType="text/javascript"></script>"""
+  private def generatePolytag(id: BSONObjectID, dsp: String, domain: String): String = {
+    s"""<div id="video${id.stringify}"></div>\n<script src="$domain/object?p=${id.stringify}&${config.getString(s"DSPtemplates.$dsp")}" \nType="text/javascript"></script>"""
   }
 
   val futureHandler: PartialFunction[Try[Any], server.Route] = {

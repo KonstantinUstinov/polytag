@@ -55,15 +55,28 @@
     </div>
 
     <div class="row voffset3">
-        <div class="col-md-2">
-
+        <div class="col-md-2 text-right">
             <label for="dspsid" class="control-label ">DSPs</label>
-
+        </div>
+        <div class="col-md-10">
             <select selectpicker class="selectpicker" data-width="150px" ng-model="createdTag.dps"  ng-change="dpschange()"  id="dspsid">
                 <option>Nuviad</option>
                 <option>Peak226</option>
                 <option>Appreciate</option>
                 <option>GetIntent</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="row voffset3">
+        <div class="col-md-2 text-right">
+            <label for="dspsid" class="control-label ">Domain</label>
+        </div>
+        <div class="col-md-10">
+
+            <select class="form-control"  data-width="300px"  ng-change="domainChanged()" ng-model="createdTag.domain">
+                <option ng-selected="createdTag.domain == item" ng-repeat="item in createdTag.domains" ng-value="item">{{item}}</option>
             </select>
 
         </div>

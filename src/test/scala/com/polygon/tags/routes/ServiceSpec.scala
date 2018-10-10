@@ -129,7 +129,7 @@ class ServiceSpec
   "Service" should "return  object js" in {
     Get(s"/api/tags/object?p=" + id.stringify + "&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]") ~> routes ~> check {
       status shouldBe OK
-      responseAs[String] shouldBe s""" document.write('<object id="object" type="text/html"  data="https://localhost:8585/api/tags/original?p=${id.stringify}&sid=%5B%5BBUNDLE_ID_ENCODED%5D%5D&d=%5B%5BBUNDLE_ID_ENCODED%5D%5D&appn=%5B%5BAPP_NAME_ENCODED%5D" style="width: 320px; height: 270px;"><p>backup content</p></object>'); """
+      responseAs[String] shouldBe s""" document.write('<object id="object" type="text/html"  data="http://example.com/api/tags/original?p=${id.stringify}&sid=[[BUNDLE_ID_ENCODED]]&d=[[BUNDLE_ID_ENCODED]]&appn=[[APP_NAME_ENCODED]" style="width: 320px; height: 270px;"><p>backup content</p></object>'); """
     }
   }
 
