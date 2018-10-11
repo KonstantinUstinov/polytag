@@ -7,11 +7,10 @@ class TagsUtilsSpec extends FlatSpec with Matchers {
 
   val  result = Uri.Query("sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}")
 
-
   "TagsUtil" should "get List of PlayerIDs" in {
 
-    val s = "<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXXXXXXX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>\n\n</div>\n<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXXXXXXX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>\n\n</div>\n<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXXXXXXX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>\n\n</div><"
-    TagsUtils.getPlayerIDs(s) shouldBe List("XXXXXXXX", "XXXXXXXX", "XXXXXXXX")
+    val s = "<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>\n\n</div>\n<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>\n\n</div>\n<div id=\"videoXXXXXXX{{TIMESTAMP}}\" style=\"width: 300px; height: 250px;\">\n\n<script src=\"http://p.videoalg.com/player/player.js?p=XXXX&sid={{APP_BUNDLE}}_{{USER_COUNTRY}}_{{EXCHANGE}}_{{CAMPAIGN_ID}}&cb={{TIMESTAMP}}&c1={{CLICK_ID}}&appn={{APP_NAME_ENC}}&appv={{APP_VERSION}}&appb={{APP_BUNDLE}}&appsu={{APP_STOREURL}}&appidfa={{DEVICE_IFA}}&appaid={{DEVICE_IFA}}&appsi={{APP_BUNDLE}}&appc={{APP_CATEGORY_ENC}}&country={{USER_COUNTRY}}&loc={{USER_GEO_LAT}}&loclong={{USER_GEO_LNG}}&loclat={{USER_GEO_LAT}}&deviceid={{DEVICE_IFA}}&w=480&h=320&d={{APP_BUNDLE}}\"\n\ntype=\"text/javascript\"></script>\n\n</div><"
+    TagsUtils.getPlayerIDs(s) shouldBe List("XX", "XXX", "XXXX")
 
   }
 
@@ -66,10 +65,27 @@ class TagsUtilsSpec extends FlatSpec with Matchers {
     TagsUtils.getSizeOfAd(s) shouldBe List((300, 250), (301, 250), (300, 250))
   }
 
-  "TagsUtil" should "conver style to Json" in {
-    TagsUtils.convertStyleToSize("width: 300px; height: 250px;") shouldBe Some((300, 250))
-    TagsUtils.convertStyleToSize("width: 300; height: 250;") shouldBe Some((300, 250))
-    TagsUtils.convertStyleToSize("height: 250; width: 300; ff: 3;") shouldBe Some((300, 250))
-    TagsUtils.convertStyleToSize("ff: 3;") shouldBe None
+  "TagUtil" should "find all style params in" in {
+    val s = "<div style=\"width: 300px; height: 250px; overflow: hidden\">\n<a href=\"https://clk.taptica.com/aff_c?offer_id=34937049&tt_appid=878577184&aff_id=2232829&tt_aff_clickid={IMPRESSION_CONTEXT}&tt_sub_aff=5449&tt_idfa=${IOS_IFA}\">\n<img src=\"http://cdn1-54633552.algovid.tv/5bbcaaa313619_1a050a25fd4745888919414b35cc1988_Shein_US_300x250.jpg\n\" width=\"300\" height=\"250\">\n</a>\n<div id=\"video1248467854${CACHE_BUSTER}\" style=\"width: 320px; height: 480px;\"><script src=\"https://p.algovid.com/player/player.js?p=1248467854&sid=${APP_BUNDLE_ID}&cb=${CACHE_BUSTER}&appn=${APP_NAME}&appv=[APP_VER]&appb=${APP_BUNDLE_ID}&appsu=${APP_STORE_URL}&appidfa=${IOS_IFA}&appaid=${GOOGLE_AID}&appsi=[APP_STORE_ID]&appc=[APP_CATEGORY]&country=[COUNTRY_ID]&loc=[LOCATION]&loclong=${LONGITUDE}&loclat=${LATITUDE}&deviceid=[DEVICEID]&w=320&h=480&ho=1&d=${APP_BUNDLE_ID}&c4=${IMPRESSION_CONTEXT}&c5=${IMPRESSION_CONTEXT}\" type=\"text/javascript\"></script></div>\n</div>"
+    TagsUtils.getSizeOfAd(s) shouldBe List((300, 250))
   }
+
+  "TagUtil" should "find all player ID" in {
+    val s = "<div style=\"width: 300px; height: 250px; overflow: hidden\">\n<a href=\"https://clk.taptica.com/aff_c?offer_id=34937049&tt_appid=878577184&aff_id=2232829&tt_aff_clickid={IMPRESSION_CONTEXT}&tt_sub_aff=5449&tt_idfa=${IOS_IFA}\">\n<img src=\"http://cdn1-54633552.algovid.tv/5bbcaaa313619_1a050a25fd4745888919414b35cc1988_Shein_US_300x250.jpg\n\" width=\"300\" height=\"250\">\n</a>\n<div id=\"video1248467854${CACHE_BUSTER}\" style=\"width: 320px; height: 480px;\"><script src=\"https://p.algovid.com/player/player.js?p=1248467854&sid=${APP_BUNDLE_ID}&cb=${CACHE_BUSTER}&appn=${APP_NAME}&appv=[APP_VER]&appb=${APP_BUNDLE_ID}&appsu=${APP_STORE_URL}&appidfa=${IOS_IFA}&appaid=${GOOGLE_AID}&appsi=[APP_STORE_ID]&appc=[APP_CATEGORY]&country=[COUNTRY_ID]&loc=[LOCATION]&loclong=${LONGITUDE}&loclat=${LATITUDE}&deviceid=[DEVICEID]&w=320&h=480&ho=1&d=${APP_BUNDLE_ID}&c4=${IMPRESSION_CONTEXT}&c5=${IMPRESSION_CONTEXT}\" type=\"text/javascript\"></script></div>\n</div>"
+    TagsUtils.getPlayerIDs(s) shouldBe List("1248467854")
+  }
+
+  "TagUtil" should "replace params" in {
+    val s = "<div style=\"width: 300px; height: 250px; overflow: hidden\">\n<a href=\"https://clk.taptica.com/aff_c?offer_id=34937049&tt_appid=878577184&aff_id=2232829&tt_aff_clickid={IMPRESSION_CONTEXT}&tt_sub_aff=5449&tt_idfa=${IOS_IFA}\">\n<img src=\"http://cdn1-54633552.algovid.tv/5bbcaaa313619_1a050a25fd4745888919414b35cc1988_Shein_US_300x250.jpg\n\" width=\"300\" height=\"250\">\n</a>\n<div id=\"video1248467854${CACHE_BUSTER}\" style=\"width: 320px; height: 480px;\"><script src=\"https://p.algovid.com/player/player.js?p=1248467854&sid=${APP_BUNDLE_ID}&cb=${CACHE_BUSTER}&appn=${APP_NAME}&appv=[APP_VER]&appb=${APP_BUNDLE_ID}&appsu=${APP_STORE_URL}&appidfa=${IOS_IFA}&appaid=${GOOGLE_AID}&appsi=[APP_STORE_ID]&appc=[APP_CATEGORY]&country=[COUNTRY_ID]&loc=[LOCATION]&loclong=${LONGITUDE}&loclat=${LATITUDE}&deviceid=[DEVICEID]&w=320&h=480&ho=1&d=${APP_BUNDLE_ID}&c4=${IMPRESSION_CONTEXT}&c5=${IMPRESSION_CONTEXT}\" type=\"text/javascript\"></script></div>\n</div>"
+    TagsUtils.replaceQueryInTag(s, Uri("http://f.com?p=i&a=6").query()) shouldBe "<div style=\"width: 300px; height: 250px; overflow: hidden\">\n<a href=\"https://clk.taptica.com/aff_c?offer_id=34937049&tt_appid=878577184&aff_id=2232829&tt_aff_clickid={IMPRESSION_CONTEXT}&tt_sub_aff=5449&tt_idfa=${IOS_IFA}\">\n<img src=\"http://cdn1-54633552.algovid.tv/5bbcaaa313619_1a050a25fd4745888919414b35cc1988_Shein_US_300x250.jpg\n\" width=\"300\" height=\"250\">\n</a>\n<div id=\"video1248467854${CACHE_BUSTER}\" style=\"width: 320px; height: 480px;\"><script src=\"https://p.algovid.com/player/player.js?p=1248467854&a=6\" type=\"text/javascript\"></script></div>\n</div>"
+  }
+
+
+
+    "TagsUtil" should "conver style to Json" in {
+      TagsUtils.convertStyleToSize("width: 300px; height: 250px;") shouldBe Some((300, 250))
+      TagsUtils.convertStyleToSize("width: 300; height: 250;") shouldBe Some((300, 250))
+      TagsUtils.convertStyleToSize("height: 250; width: 300; ff: 3;") shouldBe Some((300, 250))
+      TagsUtils.convertStyleToSize("ff: 3;") shouldBe None
+    }
 }

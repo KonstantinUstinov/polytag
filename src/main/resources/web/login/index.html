@@ -83,11 +83,7 @@
 <body ng-app="login_app" ng-controller="MainController">
 <div class="container">
     <div class="row voffset2 page-header">
-        <div class="col-md-10">
-            <h3>
-                <img src="../images/image001.png"> &nbsp;&nbsp;<span style="vertical-align: sub">Polytags Login</span>
-            </h3>
-        </div>
+
     </div>
 
     <!--login -->
@@ -101,7 +97,6 @@
 
             <div ng-hide="isInvalidRequest()">
 
-                <h3>Please login to access '{{client_id}}'</h3> <br>
 
                 <form name="form" ng-submit="login()" role="form" method="post">
 

@@ -9,7 +9,7 @@ import nu.validator.htmlparser.sax.HtmlParser
 import org.xml.sax.InputSource
 import spray.json.JsString
 
-import scala.xml.Node
+import scala.xml.{Node, Text}
 import scala.xml.parsing.NoBindingFactoryAdapter
 
 object TagsUtils {
@@ -18,7 +18,7 @@ object TagsUtils {
     getRootNode(tag).
       flatMap(_.attribute("src")).
       flatten.flatMap(url => Uri(url.text).query().
-      get("p"))
+      get("p")).distinct
   }
 
   def getDSPTemplates(tag: String): List[Uri.Query] = {
@@ -61,7 +61,7 @@ object TagsUtils {
   }
 
   private def getDivNode(tag: String): List[Node] = {
-    (getBinder(tag).rootElem \\ "div" ).toList
+    (getBinder(tag).rootElem \ "_" \ "div" ).toList
   }
 
   private def getRootNode(tag: String): List[Node] = {
