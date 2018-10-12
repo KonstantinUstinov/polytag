@@ -14,6 +14,9 @@ function ListOfTags($scope, $http, $modal, configLoader){
 
         $scope.toUpdateDate = new Date();;
         $scope.fromUpdateDate = date;
+        $scope.domain = "ALL";
+        $scope.domains = $scope.config.domains;
+        $scope.domains.push('ALL');
         $scope.refreshData();
     };
 
@@ -47,6 +50,10 @@ function ListOfTags($scope, $http, $modal, configLoader){
         if(typeof $scope.playerid != 'undefined' && $scope.playerid)
         {
             url += "&playerid=" + $scope.playerid;
+        }
+
+        if($scope.domain != 'ALL'){
+            url += "&domain=" + $scope.domain;
         }
 
         $http({method: 'GET', withCredentials: true, url: url}).success(function(data){
@@ -102,7 +109,7 @@ function ListOfTags($scope, $http, $modal, configLoader){
         if (matches.length > 0)
             return matches[0];
         else
-            return "https://s.cubiqads.com/api/tags";
+            return $scope.config[0];
     };
 
     $scope.openModal = function(isEditMode, item){
@@ -117,7 +124,7 @@ function ListOfTags($scope, $http, $modal, configLoader){
                         DSPs: item.DSPs[0],
                         tagId: item.id,
                         domains: $scope.config.domains,
-                        domain: $scope.findDomain(item.polyTag, $scope.config.domains)
+                        domain: item.domain
                     }
                 }
             }
@@ -126,6 +133,7 @@ function ListOfTags($scope, $http, $modal, configLoader){
         modalInstance.result.then(function(editedItem){
             item.originalTag = editedItem.originalTag;
             item.polyTag = editedItem.polyTag;
+            item.domain = editedItem.domain;
             var dspArray=[];
             if (typeof editedItem.DSPs != 'undefined' && editedItem.DSPs)
                 if(editedItem.DSPs !== 'NA')
@@ -148,6 +156,7 @@ function ListOfTags($scope, $http, $modal, configLoader){
         update.name = item.name;
         update.playerIDs = item.playerIDs;
         update.DSPs = item.DSPs;
+        update.domain = item.domain;
 
         $http({method: 'PUT', withCredentials: true, url: url, data: update, headers: {"Content-Type": "application/json;charset=UTF-8"},}).success(function(data){
             $scope.refreshData();
@@ -169,7 +178,7 @@ function ListOfTags($scope, $http, $modal, configLoader){
                         name: "",
                         dps: "Nuviad",
                         domains: $scope.config.domains,
-                        domain: "https://s.cubiqads.com/api/tags"
+                        domain: $scope.config.domains[0]
                     }
                 }
             }

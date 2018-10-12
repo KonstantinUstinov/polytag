@@ -9,6 +9,7 @@ case class Tag(id: BSONObjectID,
                creationDate: BSONDateTime,
                modifiedDate: BSONDateTime,
                playerIDs: List[String],
+               domain: String,
                DSPs: List[DSPTemplates.DSPTemplates])
 
 object DSPTemplates extends Enumeration {

@@ -25,7 +25,7 @@ import scala.util.{Failure, Success, Try}
 object Service {
   case class ErrorDetail(code: Int, error: String, message: Option[String] = None, info: Option[String] = None)
   case class NewTag(name: String, original: String, dsp: String = "Nuviad", domain: String = "https://s.cubiqads.com/api/tags")
-  case class UpdateTag(polyTag: String, originalTag: String, name: String, playerIDs: List[String], DSPs: List[DSPTemplates.DSPTemplates])
+  case class UpdateTag(polyTag: String, originalTag: String, name: String, playerIDs: List[String], domain: String, DSPs: List[DSPTemplates.DSPTemplates])
 }
 
 trait Service extends Protocols with ConfigProvider with TagDAO {
@@ -41,7 +41,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
     require(BSONObjectID.parse(id).isSuccess, "the informed id is not a representation of a valid hex string")
   }
 
-  case class SearchRequest(_id: Option[String], playerIDs: Option[String], creationDateFrom: Option[String], creationDateTo: Option[String], modifiedDateFrom: Option[String], modifiedDateTo: Option[String], DSPs: Option[String], name: Option[String], limit: Option[Int]) {
+  case class SearchRequest(_id: Option[String], playerIDs: Option[String], creationDateFrom: Option[String], creationDateTo: Option[String], modifiedDateFrom: Option[String], modifiedDateTo: Option[String], DSPs: Option[String], name: Option[String], domain: Option[String],limit: Option[Int]) {
     if(_id.nonEmpty)
       require(BSONObjectID.parse(_id.get).isSuccess, "the informed id is not a representation of a valid hex string")
 
@@ -93,6 +93,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
                 dao.update(BSONDocument("_id" -> BSONObjectID.parse(request.id).get), BSONDocument("$set" -> BSONDocument("name" -> tag.name,
                                                                                                                           "polyTag" -> tag.polyTag,
                                                                                                                           "originalTag" -> tag.originalTag,
+                                                                                                                          "domain" -> tag.domain,
                                                                                                                           "playerIDs" -> BSONArray(TagsUtils.getPlayerIDs(tag.originalTag).map(BSONString(_))),
                                                                                                                           "DSPs" -> BSONArray(tag.DSPs.map(t => BSONString(t.toString))),
                                                                                                                           "modifiedDate" -> BSONDateTime(System.currentTimeMillis()))),
@@ -119,7 +120,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
                 if(players.isEmpty & dsp.isEmpty)
                   complete(Conflict, ErrorDetail(409, "cannot parse players id"))
                 else
-                  complete(OK, Tag(id, generatePolytag(id, tag.dsp, tag.domain), tag.original, tag.name, BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), players, List(DSPTemplates.withName(tag.dsp))))
+                  complete(OK, Tag(id, generatePolytag(id, tag.dsp, tag.domain), tag.original, tag.name, BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), players, tag.domain, List(DSPTemplates.withName(tag.dsp))))
             }){ result =>
               futureHandler(result)
             }
@@ -165,7 +166,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       } ~
       pathPrefix("search") {
         get {
-          parameters('polytagid.as[String].?, 'playerid.as[String].?, 'creationdatefrom.as[String].?, 'creationdateto.as[String].?, 'updatedatefrom.as[String].?, 'updatedateto.as[String].?, 'dsp.as[String].?, 'name.as[String].?, 'limit.as[Int].?).as(SearchRequest) { request =>
+          parameters('polytagid.as[String].?, 'playerid.as[String].?, 'creationdatefrom.as[String].?, 'creationdateto.as[String].?, 'updatedatefrom.as[String].?, 'updatedateto.as[String].?, 'dsp.as[String].?, 'name.as[String].?, 'domain.as[String].?, 'limit.as[Int].?).as(SearchRequest) { request =>
             onComplete(dao.find(generateSearchJson(request),limit = request.limit.getOrElse(100))) { result =>
               futureHandler(result)
             }
@@ -192,12 +193,13 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
     val playerID = search.playerIDs.map(id => BSONDocument("playerIDs" -> id))
     val dSP = search.DSPs.map(id => BSONDocument("DSPs" -> id))
     val name = search.name.map(name => BSONDocument("name" -> name))
+    val domain = search.domain.map(domain => BSONDocument("domain" -> domain))
     val creationDate = search.creationDateFrom.map(creationDate => BSONDocument("creationDate" -> BSONDocument("$gte" -> BSONDateTime(getCurrentDate(creationDate)), "$lt" -> BSONDateTime(getNextDate(search.creationDateTo.get)))))
     val modifiedDate = search.modifiedDateFrom.map(modifiedDate => BSONDocument("modifiedDate" -> BSONDocument("$gte" -> BSONDateTime(getCurrentDate(modifiedDate)), "$lt" -> BSONDateTime(getNextDate(search.modifiedDateTo.get)))))
 
     search match {
-      case SearchRequest(None, None, None, None, None, None, None, None, _) => BSONDocument()
-      case _ =>  BSONDocument("$and" -> BSONArray(List(_id, playerID, dSP, name, creationDate, modifiedDate).flatten))
+      case SearchRequest(None, None, None, None, None, None, None, None, None, _) => BSONDocument()
+      case _ =>  BSONDocument("$and" -> BSONArray(List(_id, playerID, dSP, name, domain, creationDate, modifiedDate).flatten))
     }
   }
 

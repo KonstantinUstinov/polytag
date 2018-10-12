@@ -15,17 +15,19 @@ trait Protocols extends DefaultJsonProtocol {
         "originalTag" -> JsString(obj.originalTag),
         "name" -> JsString(obj.name),
         "playerIDs" -> JsArray(obj.playerIDs.map(JsString(_)).toVector),
+        "domain" -> JsString(obj.domain),
         "DSPs" -> JsArray(obj.DSPs.map(t => JsString(t.toString)).toVector)
       ))
     }
 
     override def read(json: JsValue): UpdateTag =
-      json.asJsObject.getFields("polyTag", "originalTag", "name", "playerIDs", "DSPs") match {
-        case Seq(JsString(polyTag), JsString(originalTag), JsString(name), JsArray(playerIDs), JsArray(dps)) =>
+      json.asJsObject.getFields("polyTag", "originalTag", "name", "playerIDs", "domain", "DSPs") match {
+        case Seq(JsString(polyTag), JsString(originalTag), JsString(name), JsArray(playerIDs), JsString(domain), JsArray(dps)) =>
           UpdateTag(polyTag,
             originalTag,
             name,
             playerIDs.map(_.convertTo[String]).toList,
+            domain,
             dps.map(dps => DSPTemplates.withName(dps.convertTo[String])).toList)
         case _ => throw new DeserializationException("UpdateTag expected")
       }
@@ -41,13 +43,14 @@ trait Protocols extends DefaultJsonProtocol {
         "creationDate" -> JsString(DateTime(obj.creationDate.value).toIsoDateTimeString()),
         "modifiedDate" -> JsString(DateTime(obj.modifiedDate.value).toIsoDateTimeString()),
         "playerIDs" -> JsArray(obj.playerIDs.map(JsString(_)).toVector),
+        "domain" -> JsString(obj.domain),
         "DSPs" -> JsArray(obj.DSPs.map(t => JsString(t.toString)).toVector)
       ))
     }
 
     override def read(json: JsValue): Tag =
-      json.asJsObject.getFields("id", "polyTag", "originalTag", "name", "creationDate", "modifiedDate", "playerIDs", "DSPs") match {
-        case Seq(JsString(id), JsString(polyTag), JsString(originalTag), JsString(name), JsString(creationDate), JsString(modifiedDate), JsArray(playerIDs), JsArray(dps)) =>
+      json.asJsObject.getFields("id", "polyTag", "originalTag", "name", "creationDate", "modifiedDate", "playerIDs", "domain", "DSPs") match {
+        case Seq(JsString(id), JsString(polyTag), JsString(originalTag), JsString(name), JsString(creationDate), JsString(modifiedDate), JsArray(playerIDs), JsString(domain), JsArray(dps)) =>
           Tag(BSONObjectID.parse(id).get,
               polyTag,
               originalTag,
@@ -55,6 +58,7 @@ trait Protocols extends DefaultJsonProtocol {
               BSONDateTime(DateTime.fromIsoDateTimeString(creationDate).get.clicks),
               BSONDateTime(DateTime.fromIsoDateTimeString(modifiedDate).get.clicks),
               playerIDs.map(_.convertTo[String]).toList,
+              domain,
               dps.map(dps => DSPTemplates.withName(dps.convertTo[String])).toList)
         case _ => throw new DeserializationException("tag expected")
       }

@@ -20,8 +20,9 @@ object TagDAO extends ConfigProvider {
         modifiedDate <- bson.getAs[BSONDateTime]("modifiedDate")
         playerIDs <- bson.getAs[List[String]]("playerIDs")
         dsp <- bson.getAs[BSONArray]("DSPs")
+        domain <- bson.getAs[String]("domain")
 
-      } yield Tag(id, polyTag, originalTag, name, creationDate, modifiedDate, playerIDs, convertArrayToDSP(dsp))
+      } yield Tag(id, polyTag, originalTag, name, creationDate, modifiedDate, playerIDs, domain,  convertArrayToDSP(dsp))
       opt.get
     }
 
@@ -43,6 +44,7 @@ object TagDAO extends ConfigProvider {
         "creationDate" -> tag.creationDate,
         "modifiedDate" -> tag.modifiedDate,
         "playerIDs" -> BSONArray(tag.playerIDs.map(BSONString(_))),
+        "domain" -> tag.domain,
         "DSPs" -> BSONArray(tag.DSPs.map(t => BSONString(t.toString)))
       )
     }
