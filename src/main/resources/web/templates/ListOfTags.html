@@ -112,11 +112,6 @@
                    ng-model="playerid"  ng-disabled="false">
         </div>
 
-        <div class="col-md-2">
-            <br>
-            <button id="btnRefresh" class="btn btn-primary" ng-click="refreshData()">Refresh</button>
-            <button id="btnCreate" class="btn btn-primary" ng-click="create()">Create</button>
-        </div>
     </div>
 
     <div class="row">
@@ -125,6 +120,13 @@
             <select class="form-control"  data-width="300px"  ng-change="refreshData()" ng-model="domain">
                 <option ng-selected="domain == item" ng-repeat="item in domains" ng-value="item">{{item}}</option>
             </select>
+        </div>
+        <div class="col-md-5">
+        </div>
+        <div class="col-md-2">
+            <br>
+            <button id="btnRefresh" class="btn btn-primary" ng-click="refreshData()">Refresh</button>
+            <button id="btnCreate" class="btn btn-primary" ng-click="create()">Create</button>
         </div>
     </div>
 

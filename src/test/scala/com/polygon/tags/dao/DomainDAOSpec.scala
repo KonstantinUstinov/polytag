@@ -35,11 +35,11 @@ class DomainDAOSpec extends AsyncFlatSpec with ConfigProvider with DomainDAO {
     }
   }
 
-/*
+
   "DomainDAO" should "remove user" in {
     domain_dao.remove(id).map{wr =>
       assert(wr.ok)
     }
-  } */
+  }
 
 }

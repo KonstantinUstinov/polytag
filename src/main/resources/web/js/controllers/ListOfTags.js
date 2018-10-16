@@ -15,7 +15,7 @@ function ListOfTags($scope, $http, $modal, configLoader){
         $scope.toUpdateDate = new Date();;
         $scope.fromUpdateDate = date;
         $scope.domain = "ALL";
-        $scope.domains = $scope.config.domains;
+        $scope.domains = $scope.config.domains.slice(0);
         $scope.domains.push('ALL');
         $scope.refreshData();
     };

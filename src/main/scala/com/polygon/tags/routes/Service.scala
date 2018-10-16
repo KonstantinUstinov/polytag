@@ -6,7 +6,7 @@ import akka.event.LoggingAdapter
 import akka.http.scaladsl.server
 import akka.stream.Materializer
 import com.polygon.tags.Protocols
-import com.polygon.tags.dao.{DSPTemplates, Tag, TagDAO}
+import com.polygon.tags.dao.{DSPTemplates, DomainDAO, Tag, TagDAO}
 import com.polygon.tags.routes.Service.{ErrorDetail, NewTag, UpdateTag}
 import com.polygon.tags.utils.{ConfigProvider, TagsUtils}
 import reactivemongo.bson.{BSONArray, BSONDateTime, BSONDocument, BSONObjectID, BSONString}
@@ -18,6 +18,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.MediaTypes._
 import akka.http.scaladsl.model.HttpCharsets._
 import reactivemongo.bson
+
 import scala.collection.JavaConversions._
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
@@ -28,7 +29,7 @@ object Service {
   case class UpdateTag(polyTag: String, originalTag: String, name: String, playerIDs: List[String], domain: String, DSPs: List[DSPTemplates.DSPTemplates])
 }
 
-trait Service extends Protocols with ConfigProvider with TagDAO {
+trait Service extends Protocols with ConfigProvider with TagDAO with DomainDAO {
 
   implicit val system: ActorSystem
   implicit val materializer: Materializer
@@ -175,6 +176,7 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
       }
     } ~
     path("config") {
+      onComplete(domain_dao.getAll) { result =>
         complete {
           s"""|var GLOBAL_ENV_CONFIG = {
               |"service-mapping": {
@@ -183,9 +185,10 @@ trait Service extends Protocols with ConfigProvider with TagDAO {
               |"editor-max-length": "65535",
               |"snippetDescMaxLength": "256",
               |"snippetPathMaxLength": "1024",
-              |"domains" : ["${config.getStringList("Domains").mkString("\",\"")}"],
+              |"domains" : ["${result.get.map(_.path).mkString("\",\"")}"],
               |"timeOut": "30m" }""".stripMargin
         }
+      }
     }
 
   private def generateSearchJson(search: SearchRequest) : BSONDocument =  {

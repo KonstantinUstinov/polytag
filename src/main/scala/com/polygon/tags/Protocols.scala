@@ -2,7 +2,7 @@ package com.polygon.tags
 
 import akka.http.scaladsl.model.DateTime
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsArray, JsObject, JsString, JsValue, RootJsonFormat}
-import com.polygon.tags.dao.{DSPTemplates, Tag}
+import com.polygon.tags.dao.{DSPTemplates, Domain, Tag}
 import com.polygon.tags.routes.Service.{ErrorDetail, NewTag, UpdateTag}
 import reactivemongo.bson.{BSONDateTime, BSONObjectID}
 
@@ -67,5 +67,21 @@ trait Protocols extends DefaultJsonProtocol {
 
   implicit val errorDetailFormat = jsonFormat4(ErrorDetail.apply)
   implicit val newTag = jsonFormat4(NewTag.apply)
+
+  implicit val domain : RootJsonFormat[Domain] = new RootJsonFormat[Domain] {
+    override def write(obj: Domain): JsValue = {
+      JsObject(Map[String, JsValue](
+        "id" -> JsString(obj.id.stringify),
+        "path" -> JsString(obj.path)
+      ))
+    }
+
+    override def read(json: JsValue): Domain =
+      json.asJsObject.getFields("id", "path") match {
+        case Seq(JsString(id), JsString(path)) =>
+          Domain(BSONObjectID.parse(id).get, path)
+        case _ => throw new DeserializationException("UpdateTag expected")
+      }
+  }
 
 }
