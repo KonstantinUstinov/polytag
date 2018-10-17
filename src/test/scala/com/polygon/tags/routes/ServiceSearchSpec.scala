@@ -25,10 +25,10 @@ class ServiceSearchSpec extends FlatSpec
 
 
   val id = BSONObjectID.generate()
-  val tag = Tag(id, "poly", "original", "name", BSONDateTime(1535747635000L), BSONDateTime(1535747635000L), List("id-1", "id-2"), List(DSPTemplates.Nuviad, DSPTemplates.GetIntent))
+  val tag = Tag(id, "poly", "original", "name", BSONDateTime(1535747635000L), BSONDateTime(1535747635000L), List("id-1", "id-2"), "domain", List(DSPTemplates.Nuviad, DSPTemplates.GetIntent))
 
   val id2 = BSONObjectID.generate()
-  val tag2 = Tag(id2, "poly2", "original2", "name2", BSONDateTime(1535747635000L), BSONDateTime(1535747635000L), List("id-22", "id-33"), List(DSPTemplates.Peak226, DSPTemplates.Appreciate))
+  val tag2 = Tag(id2, "poly2", "original2", "name2", BSONDateTime(1535747635000L), BSONDateTime(1535747635000L), List("id-22", "id-33"), "domain", List(DSPTemplates.Peak226, DSPTemplates.Appreciate))
 
   private def joinFuture(f1: Future[WriteResult], f2: Future[WriteResult]) = {
     for {
@@ -121,4 +121,13 @@ class ServiceSearchSpec extends FlatSpec
 
     }
   }
+
+  "Search" should "be path by domain" in {
+    Get(s"/api/tags/search?domain=domain") ~> routes ~> check {
+      status shouldBe OK
+      contentType shouldBe `application/json`
+      responseAs[List[Tag]].count(_ => true) shouldBe 2
+    }
+  }
+
 }

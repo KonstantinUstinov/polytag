@@ -112,6 +112,17 @@
                    ng-model="playerid"  ng-disabled="false">
         </div>
 
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <label for="polytagid">Domain</label>
+            <select class="form-control"  data-width="300px"  ng-change="refreshData()" ng-model="domain">
+                <option ng-selected="domain == item" ng-repeat="item in domains" ng-value="item">{{item}}</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+        </div>
         <div class="col-md-2">
             <br>
             <button id="btnRefresh" class="btn btn-primary" ng-click="refreshData()">Refresh</button>
@@ -132,6 +143,7 @@
                     <th class="col-md-1">Name</th>
                     <th>Player ID</th>
                     <th>DSP</th>
+                    <th>Domain</th>
                     <th>Creation Date</th>
                     <th>Updated Date</th>
                 </tr>
@@ -154,6 +166,7 @@
                     <td>{{item.name}}</td>
                     <td>{{item.playerIDs}}</td>
                     <td>{{item.DSPs}}</td>
+                    <td>{{item.domain}}</td>
                     <td>{{item.creationDate | date : 'M/d/yy HH:mm:ss' }}</td>
                     <td>{{item.modifiedDate | date : 'M/d/yy HH:mm:ss' }}</td>
                 </tbody>

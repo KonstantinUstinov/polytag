@@ -16,6 +16,7 @@ app.directive("selectpicker", SelectPickerDirective);
 app.directive('resizable', ResizableDirective);
 
 app.controller('ListOfTags', ['$scope', '$http', '$modal', 'configLoader', ListOfTags]);
+app.controller('ListOfDomains', ['$scope', '$http', '$modal', 'configLoader', ListOfDomains]);
 
 
 app.controller('MainController', ['$scope', '$cookies', 'authCook', '$modal', '$http', function($scope, $cookies, authCook, $modal, $http){
@@ -101,6 +102,21 @@ app.controller('EditModalTagCtrl', function($scope, $modalInstance, editTag, $ht
     $scope.cancel = function(){
         $modalInstance.dismiss('cancel');
     };
+});
+
+
+app.controller('EditModalDomainCtrl', function($scope, $modalInstance, editDomain) {
+
+    $scope.editDomain = editDomain;
+
+    $scope.ok = function(){
+        $modalInstance.close($scope.editDomain);
+    };
+
+    $scope.cancel = function(){
+        $modalInstance.dismiss('cancel');
+    };
+
 });
 
 app.controller('CreateModalTagCtrl', function($scope, $modalInstance, createdTag, $http, configLoader){

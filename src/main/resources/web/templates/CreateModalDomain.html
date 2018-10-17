@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"><span
+            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+    <h4 class="modal-title">New Domain</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-2 text-right">
+            <label>Domain</label>
+        </div>
+        <div class="col-md-10">
+            <input id="path" class="form-control" type='text' value=""
+                   placeholder="Path"
+                   ng-model="editDomain.path" required >
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="ok()">Save
+    </button>
+</div>

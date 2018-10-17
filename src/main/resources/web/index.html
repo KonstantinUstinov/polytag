@@ -44,7 +44,7 @@
 
     <script src="js/directives/SelectPickerDirective.js"></script>
     <script src="js/directives/ResizableDirective.js"></script>
-
+    <script src="js/controllers/ListOfDomains.js"></script>
     <script src="js/controllers/ListOfTags.js"></script>
     <script src="js/controllers/authCook.js"></script>
     <script src="js/controllers/main.js"></script>
@@ -83,6 +83,28 @@
                 </accordion-heading>
 
                 <div ng-include="'templates/ListOfTags.html'"></div>
+
+            </accordion-group>
+
+
+        </accordion>
+    </div>
+
+    <div class="row voffset4">
+
+        <accordion close-others="false" ng-show=true>
+
+            <!-- Select snippet Panel -->
+
+            <accordion-group is-open="isOpen[1]">
+
+                <accordion-heading ng-click="isOpen[1]=!isOpen[1]">
+                    <div>
+                        List of Domains
+                    </div>
+                </accordion-heading>
+
+                <div ng-include="'templates/ListOfDomains.html'"></div>
 
             </accordion-group>
 

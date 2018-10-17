@@ -12,7 +12,7 @@ class TagDAOSpec extends AsyncFlatSpec with ConfigProvider with TagDAO {
 
   "TagDAO" should "save tag empty list" in {
 
-    val result = dao.save(Tag(id, "poly", "original", "name", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List.empty, List.empty))
+    val result = dao.save(Tag(id, "poly", "original", "name", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List.empty, "doamin", List.empty))
     result.map{wr =>
       assert(wr.ok)
     }
@@ -37,7 +37,7 @@ class TagDAOSpec extends AsyncFlatSpec with ConfigProvider with TagDAO {
 
   "TagDAO" should "save tag" in {
 
-    val result = dao.save(Tag(id, "poly", "original", "name", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List("id-1", "id-2"), List(DSPTemplates.Nuviad, DSPTemplates.GetIntent)))
+    val result = dao.save(Tag(id, "poly", "original", "name", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List("id-1", "id-2"), "doamin", List(DSPTemplates.Nuviad, DSPTemplates.GetIntent)))
     result.map{wr =>
       assert(wr.ok)
     }
@@ -55,13 +55,13 @@ class TagDAOSpec extends AsyncFlatSpec with ConfigProvider with TagDAO {
   }
 
   "TagDAO" should "cannot add tag (the same name)" in {
-    dao.insertIfNotExists(Tag(BSONObjectID.generate(), "poly", "original", "name", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List.empty, List.empty)).map { wr =>
+    dao.insertIfNotExists(Tag(BSONObjectID.generate(), "poly", "original", "name", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List.empty, "doamin", List.empty)).map { wr =>
       assert(!wr)
     }
   }
 
   "TagDAO" should "add tag (dif  name)" in {
-    dao.insertIfNotExists(Tag(id2, "poly", "original", "name2", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List.empty, List.empty)).map { wr =>
+    dao.insertIfNotExists(Tag(id2, "poly", "original", "name2", BSONDateTime(System.currentTimeMillis()), BSONDateTime(System.currentTimeMillis()), List.empty, "doamin", List.empty)).map { wr =>
       assert(wr)
     }
   }

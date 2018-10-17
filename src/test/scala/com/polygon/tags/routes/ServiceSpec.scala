@@ -23,7 +23,7 @@ class ServiceSpec
   override implicit val executor: ExecutionContextExecutor = system.dispatcher
   override val logger = Logging(system, getClass)
   val id = BSONObjectID.generate()
-  val tag = Tag(id, "poly", "original", "name", BSONDateTime(1535747635000L), BSONDateTime(1535747635000L), List("id-1", "id-2"), List(DSPTemplates.Nuviad, DSPTemplates.GetIntent))
+  val tag = Tag(id, "poly", "original", "name", BSONDateTime(1535747635000L), BSONDateTime(1535747635000L), List("id-1", "id-2"), "domain", List(DSPTemplates.Nuviad, DSPTemplates.GetIntent))
 
   override def afterAll: Unit = {
     val f = dao.remove(id)
@@ -104,7 +104,7 @@ class ServiceSpec
   }
 
   "Service" should "update  tag" in {
-    Put(s"/api/tags/" + id.stringify, UpdateTag("polygon", "origale", "Name2", List(), List(DSPTemplates.GetIntent))) ~> routes ~> check {
+    Put(s"/api/tags/" + id.stringify, UpdateTag("polygon", "origale", "Name2", List(), "domain", List(DSPTemplates.GetIntent))) ~> routes ~> check {
       status shouldBe OK
     }
 

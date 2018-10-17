@@ -1,0 +1,43 @@
+<div ng-controller="ListOfDomains" ng-init="init()">
+    <div class="row">
+        <div class="col-md-2">
+            <button id="btnRefresh" class="btn btn-primary" ng-click="refreshData()">Refresh</button>
+            <button id="btnCreate" class="btn btn-primary" ng-click="create()">Create</button>
+        </div>
+    </div>
+    <div class="row voffset3">
+
+        <!-- Logs Table  -->
+
+        <div class="col-md-12 md-scrollable">
+            <table class="table table-striped table-hover table-bordered" ng-show="domains.length">
+                <thead>
+                <tr>
+                    <th class="text-center">Actions</th>
+                    <th class="col-md-2">ID</th>
+                    <th class="col-md-6">Domain</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in domains" ng-click="onItemClick(item)" >
+                    <td class="col-sm-1 text-center">
+                        <div class="btn-group" dropdown is-open="function">
+                            <button type="button" class="btn btn-default btn-block dropdown-toggle" dropdown-toggle
+                                    ng-click="$event.stopPropagation();">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" ng-click="openModal(true, item);$event.stopPropagation();">Edit</a></li>
+                                <li><a href="#" ng-click="onDelete(item);$event.stopPropagation();">Remove</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.path}}</td>
+            </table>
+            <div class="alert alert-warning" role="alert" ng-hide="domains.length">
+                No domains found. PLS press Refresh or Create.
+            </div>
+        </div>
+    </div>
+</div>

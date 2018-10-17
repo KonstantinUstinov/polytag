@@ -2,7 +2,7 @@ package com.polygon.tags
 
 import akka.http.scaladsl.model.DateTime
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsArray, JsObject, JsString, JsValue, RootJsonFormat}
-import com.polygon.tags.dao.{DSPTemplates, Tag}
+import com.polygon.tags.dao.{DSPTemplates, Domain, Tag}
 import com.polygon.tags.routes.Service.{ErrorDetail, NewTag, UpdateTag}
 import reactivemongo.bson.{BSONDateTime, BSONObjectID}
 
@@ -15,17 +15,19 @@ trait Protocols extends DefaultJsonProtocol {
         "originalTag" -> JsString(obj.originalTag),
         "name" -> JsString(obj.name),
         "playerIDs" -> JsArray(obj.playerIDs.map(JsString(_)).toVector),
+        "domain" -> JsString(obj.domain),
         "DSPs" -> JsArray(obj.DSPs.map(t => JsString(t.toString)).toVector)
       ))
     }
 
     override def read(json: JsValue): UpdateTag =
-      json.asJsObject.getFields("polyTag", "originalTag", "name", "playerIDs", "DSPs") match {
-        case Seq(JsString(polyTag), JsString(originalTag), JsString(name), JsArray(playerIDs), JsArray(dps)) =>
+      json.asJsObject.getFields("polyTag", "originalTag", "name", "playerIDs", "domain", "DSPs") match {
+        case Seq(JsString(polyTag), JsString(originalTag), JsString(name), JsArray(playerIDs), JsString(domain), JsArray(dps)) =>
           UpdateTag(polyTag,
             originalTag,
             name,
             playerIDs.map(_.convertTo[String]).toList,
+            domain,
             dps.map(dps => DSPTemplates.withName(dps.convertTo[String])).toList)
         case _ => throw new DeserializationException("UpdateTag expected")
       }
@@ -41,13 +43,14 @@ trait Protocols extends DefaultJsonProtocol {
         "creationDate" -> JsString(DateTime(obj.creationDate.value).toIsoDateTimeString()),
         "modifiedDate" -> JsString(DateTime(obj.modifiedDate.value).toIsoDateTimeString()),
         "playerIDs" -> JsArray(obj.playerIDs.map(JsString(_)).toVector),
+        "domain" -> JsString(obj.domain),
         "DSPs" -> JsArray(obj.DSPs.map(t => JsString(t.toString)).toVector)
       ))
     }
 
     override def read(json: JsValue): Tag =
-      json.asJsObject.getFields("id", "polyTag", "originalTag", "name", "creationDate", "modifiedDate", "playerIDs", "DSPs") match {
-        case Seq(JsString(id), JsString(polyTag), JsString(originalTag), JsString(name), JsString(creationDate), JsString(modifiedDate), JsArray(playerIDs), JsArray(dps)) =>
+      json.asJsObject.getFields("id", "polyTag", "originalTag", "name", "creationDate", "modifiedDate", "playerIDs", "domain", "DSPs") match {
+        case Seq(JsString(id), JsString(polyTag), JsString(originalTag), JsString(name), JsString(creationDate), JsString(modifiedDate), JsArray(playerIDs), JsString(domain), JsArray(dps)) =>
           Tag(BSONObjectID.parse(id).get,
               polyTag,
               originalTag,
@@ -55,6 +58,7 @@ trait Protocols extends DefaultJsonProtocol {
               BSONDateTime(DateTime.fromIsoDateTimeString(creationDate).get.clicks),
               BSONDateTime(DateTime.fromIsoDateTimeString(modifiedDate).get.clicks),
               playerIDs.map(_.convertTo[String]).toList,
+              domain,
               dps.map(dps => DSPTemplates.withName(dps.convertTo[String])).toList)
         case _ => throw new DeserializationException("tag expected")
       }
@@ -63,5 +67,21 @@ trait Protocols extends DefaultJsonProtocol {
 
   implicit val errorDetailFormat = jsonFormat4(ErrorDetail.apply)
   implicit val newTag = jsonFormat4(NewTag.apply)
+
+  implicit val domain : RootJsonFormat[Domain] = new RootJsonFormat[Domain] {
+    override def write(obj: Domain): JsValue = {
+      JsObject(Map[String, JsValue](
+        "id" -> JsString(obj.id.stringify),
+        "path" -> JsString(obj.path)
+      ))
+    }
+
+    override def read(json: JsValue): Domain =
+      json.asJsObject.getFields("id", "path") match {
+        case Seq(JsString(id), JsString(path)) =>
+          Domain(BSONObjectID.parse(id).get, path)
+        case _ => throw new DeserializationException("UpdateTag expected")
+      }
+  }
 
 }
