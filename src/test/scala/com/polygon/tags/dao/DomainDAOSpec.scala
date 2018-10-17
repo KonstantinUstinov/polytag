@@ -1,12 +1,24 @@
 package com.polygon.tags.dao
 
 import com.polygon.tags.utils.ConfigProvider
-import org.scalatest.AsyncFlatSpec
+import org.scalatest.{AsyncFlatSpec, BeforeAndAfterAll}
 import reactivemongo.bson.BSONObjectID
+import scala.concurrent.duration._
+import scala.concurrent.Await
 
-class DomainDAOSpec extends AsyncFlatSpec with ConfigProvider with DomainDAO {
+class DomainDAOSpec extends AsyncFlatSpec with ConfigProvider with DomainDAO with BeforeAndAfterAll {
 
   val id = BSONObjectID.generate()
+
+  override def beforeAll: Unit ={
+    val f = domain_dao.removeAll()
+    Await.result(f, 10.second)
+  }
+
+  override def afterAll: Unit = {
+    val f = domain_dao.removeAll()
+    Await.result(f, 10.second)
+  }
 
   "DomainDAO" should "save domain" in {
     val result = domain_dao.save(Domain(id, "original"))
